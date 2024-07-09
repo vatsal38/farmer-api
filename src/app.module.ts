@@ -33,7 +33,7 @@ import { ExpenseMasterModule } from './expense-master/expense-master.module';
       },
     }),
     MongooseModule.forRoot(
-      'mongodb+srv://vatsal38:<password>@cluster.pa3r2te.mongodb.net/',
+      'mongodb+srv://vatsal38:vatsal38>@cluster.pa3r2te.mongodb.net/',
     ),
     AuthModule,
     UserModule,
