@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
@@ -21,28 +25,43 @@ export class UserService {
     lastName: string,
     password: string,
   ): Promise<void> {
-    const otp = Math.floor(1000 + Math.random() * 9000).toString();
-    const otpExpiration = new Date();
-    otpExpiration.setMinutes(otpExpiration.getMinutes() + 10);
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await this.userRepository.saveOTP(
-      username,
-      otp,
-      otpExpiration,
-      firstName,
-      lastName,
-      hashedPassword,
-      email,
-    );
-
-    await this.mailerService.sendMail({
-      to: email,
-      subject: 'Your OTP Code',
-      template: './otp', // The template file should be otp.hbs
-      context: {
+    try {
+      const user = await this.userRepository.findByUsername(username);
+      if (user) {
+        throw new ConflictException('Username is already exists');
+      }
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
+      const otpExpiration = new Date();
+      otpExpiration.setMinutes(otpExpiration.getMinutes() + 10);
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await this.userRepository.saveOTP(
+        username,
         otp,
-      },
-    });
+        otpExpiration,
+        firstName,
+        lastName,
+        hashedPassword,
+        email,
+      );
+
+      await this.mailerService.sendMail({
+        to: email,
+        subject: 'Your OTP Code',
+        template: './otp',
+        context: {
+          otp,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error.response?.statusCode === 409
+      ) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException('Failed to create user');
+      }
+    }
   }
 
   async verifyOTP(username: string, otp: string): Promise<boolean> {
@@ -86,7 +105,7 @@ export class UserService {
     await this.mailerService.sendMail({
       to: email,
       subject: 'Your Password Reset OTP',
-      template: './otp', // The template file should be password-reset-otp.hbs
+      template: './otp',
       context: {
         otp,
       },
