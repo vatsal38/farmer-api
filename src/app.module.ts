@@ -32,7 +32,9 @@ import { ExpenseMasterModule } from './expense-master/expense-master.module';
         },
       },
     }),
-    MongooseModule.forRoot('mongodb://localhost/nest'),
+    MongooseModule.forRoot(
+      'mongodb+srv://vatsal38:<password>@cluster.pa3r2te.mongodb.net/',
+    ),
     AuthModule,
     UserModule,
     ProductModule,
