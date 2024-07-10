@@ -60,13 +60,13 @@ export class Customer {
   @IsNotEmpty({ message: 'Remarks is required' })
   remarks: string;
 
-  @Prop({ required: true })
+  @Prop()
   createdBy: string;
 
   @Prop({ default: Date.now })
   createdAt: Date;
 
-  @Prop({ required: true })
+  @Prop()
   updatedBy: string;
 
   @Prop({ default: Date.now })

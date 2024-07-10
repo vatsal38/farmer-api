@@ -26,13 +26,13 @@ export class Product {
   })
   type: string;
 
-  @Prop({ required: true })
+  @Prop()
   createdBy: string;
 
   @Prop({ default: Date.now })
   createdAt: Date;
 
-  @Prop({ required: true })
+  @Prop()
   updatedBy: string;
 
   @Prop({ default: Date.now })

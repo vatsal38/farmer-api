@@ -37,13 +37,13 @@ export class ExpenseMaster {
   @Prop({ default: uuidv4 })
   unique_id: string;
 
-  @Prop({ required: true })
+  @Prop()
   createdBy: string;
 
   @Prop({ default: Date.now })
   createdAt: Date;
 
-  @Prop({ required: true })
+  @Prop()
   updatedBy: string;
 
   @Prop({ default: Date.now })
