@@ -33,7 +33,7 @@ import { ExpenseMasterModule } from './expense-master/expense-master.module';
       },
     }),
     MongooseModule.forRoot(
-      'mongodb+srv://vatsal38:vatsal38@cluster.pa3r2te.mongodb.net/',
+      'mongodb+srv://farmer-nest:123456Farmer@atlascluster.8nmj5fd.mongodb.net/farmer?retryWrites=true&w=majority&appName=AtlasCluster',
     ),
     AuthModule,
     UserModule,
