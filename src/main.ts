@@ -16,7 +16,7 @@ async function bootstrap() {
       },
     }),
   );
-
+  app.enableCors();
   app.useGlobalFilters(new ValidationExceptionFilter());
 
   await app.listen(5000);
