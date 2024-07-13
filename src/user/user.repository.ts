@@ -86,4 +86,8 @@ export class UserRepository {
   ): Promise<void> {
     await this.userModel.updateOne({ username }, { otp, otpExpiration }).exec();
   }
+
+  async updateIsProduct(username: string, isProduct: boolean): Promise<void> {
+    await this.userModel.updateOne({ username }, { isProduct }).exec();
+  }
 }

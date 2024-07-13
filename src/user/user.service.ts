@@ -89,7 +89,6 @@ export class UserService {
       (await bcrypt.compare(password, user.password))
     ) {
       const { password, ...result } = user;
-
       return result;
     } else if (!user.isVerified) {
       const otp = Math.floor(1000 + Math.random() * 9000).toString();
@@ -167,6 +166,13 @@ export class UserService {
       sub: userData._id,
       role: userData.role,
     };
+
+    let isFirstLogin = false;
+    if (userData.isVerified && userData.isProduct) {
+      isFirstLogin = true;
+      await this.userRepository.updateIsProduct(userData.username, false);
+    }
+
     if (userData.isVerified) {
       return {
         message: 'Login successfully',
@@ -180,7 +186,7 @@ export class UserService {
             email: userData.email,
             role: userData.role,
             isVerified: userData.isVerified,
-            isProduct: userData.isProduct,
+            isProduct: isFirstLogin,
           },
         },
       };

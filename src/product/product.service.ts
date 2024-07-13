@@ -38,16 +38,6 @@ export class ProductService {
               ) {
                 throw new BadRequestException('Missing required fields');
               }
-              const existingProduct =
-                await this.productRepository.findByProductName(
-                  product.productName,
-                  userId,
-                );
-              if (existingProduct) {
-                throw new BadRequestException(
-                  `Product with name ${product['Product Name']} already exists`,
-                );
-              }
               await this.productRepository.create(
                 {
                   productName: product.productName,
@@ -73,7 +63,7 @@ export class ProductService {
               ),
             );
           } finally {
-            fs.unlinkSync(filePath); // Remove the file after processing
+            fs.unlinkSync(filePath);
           }
         });
     });

@@ -59,7 +59,7 @@ export class User {
   @IsOptional()
   isVerified: boolean;
 
-  @Prop({ default: false })
+  @Prop({ default: true })
   @IsBoolean()
   @IsOptional()
   isProduct: boolean;
