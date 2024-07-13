@@ -7,13 +7,14 @@ export class FarmerRepository {
     @InjectModel(Farmer.name) private farmerModel: Model<FarmerDocument>,
   ) {}
 
-  async create(farmer: Farmer): Promise<Farmer> {
+  async create(farmer: Farmer, userId: string): Promise<Farmer> {
+    farmer.createdBy = userId;
     const newFarmer = new this.farmerModel(farmer);
     return newFarmer.save();
   }
 
-  async findAll(): Promise<Farmer[]> {
-    return this.farmerModel.find().exec();
+  async findAll(userId: string): Promise<Farmer[]> {
+    return this.farmerModel.find({ createdBy: userId }).exec();
   }
 
   async findOne(id: string): Promise<Farmer> {
@@ -28,19 +29,23 @@ export class FarmerRepository {
     return this.farmerModel.findByIdAndDelete(id).exec();
   }
 
-  async findByPhone(phone: string): Promise<Farmer | null> {
-    return this.farmerModel.findOne({ phone }).exec();
+  async findByPhone(phone: string, userId: string): Promise<Farmer | null> {
+    return this.farmerModel.findOne({ phone }, { createdBy: userId }).exec();
   }
 
-  async findByEmail(email: string): Promise<Farmer | null> {
-    return this.farmerModel.findOne({ email }).exec();
+  async findByEmail(email: string, userId: string): Promise<Farmer | null> {
+    return this.farmerModel.findOne({ email }, { createdBy: userId }).exec();
   }
 
-  async findWithPagination(skip: number, limit: number): Promise<Farmer[]> {
+  async findWithPagination(
+    skip: number,
+    limit: number,
+    userId: string,
+  ): Promise<Farmer[]> {
     return this.farmerModel.find().skip(skip).limit(limit).exec();
   }
 
-  async countAll(): Promise<number> {
-    return this.farmerModel.countDocuments().exec();
+  async countAll(userId: string): Promise<number> {
+    return this.farmerModel.countDocuments({ createdBy: userId }).exec();
   }
 }

@@ -17,16 +17,22 @@ export class ExpenseMasterService {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
-  async create(expenseMaster: ExpenseMaster): Promise<ExpenseMaster> {
+  async create(
+    expenseMaster: ExpenseMaster,
+    userId: string,
+  ): Promise<ExpenseMaster> {
     try {
       const existingExpenseMasterByPhone =
-        await this.expenseMasterRepository.findByPhone(expenseMaster.phone);
+        await this.expenseMasterRepository.findByPhone(
+          expenseMaster.phone,
+          userId,
+        );
 
       if (existingExpenseMasterByPhone) {
         throw new ConflictException('ExpenseMaster is already exists');
       }
       expenseMaster.code = this.generateCode();
-      return await this.expenseMasterRepository.create(expenseMaster);
+      return await this.expenseMasterRepository.create(expenseMaster, userId);
     } catch (error) {
       if (
         error instanceof ConflictException ||
@@ -41,12 +47,12 @@ export class ExpenseMasterService {
     }
   }
 
-  async findAll(page?: number, limit?: number) {
+  async findAll(userId: string, page?: number, limit?: number) {
     if (page && limit) {
       const skip = (page - 1) * limit;
       const [items, totalRecords] = await Promise.all([
-        this.expenseMasterRepository.findWithPagination(skip, limit),
-        this.expenseMasterRepository.countAll(),
+        this.expenseMasterRepository.findWithPagination(skip, limit, userId),
+        this.expenseMasterRepository.countAll(userId),
       ]);
       const totalPages = Math.ceil(totalRecords / limit);
       return {
@@ -57,7 +63,7 @@ export class ExpenseMasterService {
         totalPages,
       };
     } else {
-      const items = await this.expenseMasterRepository.findAll();
+      const items = await this.expenseMasterRepository.findAll(userId);
       return items;
     }
   }
@@ -73,10 +79,14 @@ export class ExpenseMasterService {
   async update(
     id: string,
     expenseMaster: Partial<ExpenseMaster>,
+    userId: string,
   ): Promise<ExpenseMaster> {
     try {
       const existingExpenseMasterByPhone =
-        await this.expenseMasterRepository.findByPhone(expenseMaster.phone);
+        await this.expenseMasterRepository.findByPhone(
+          expenseMaster.phone,
+          userId,
+        );
 
       if (existingExpenseMasterByPhone) {
         throw new ConflictException('ExpenseMaster is already exists');

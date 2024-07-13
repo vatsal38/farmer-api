@@ -15,20 +15,22 @@ export class FarmerService {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
-  async create(farmer: Farmer): Promise<Farmer> {
+  async create(farmer: Farmer, userId: string): Promise<Farmer> {
     try {
       const existingFarmerByPhone = await this.farmerRepository.findByPhone(
         farmer.phone,
+        userId,
       );
       const existingFarmerByEmail = await this.farmerRepository.findByEmail(
         farmer.email,
+        userId,
       );
       if (existingFarmerByPhone || existingFarmerByEmail) {
         throw new ConflictException('Farmer is already exists');
       }
 
       farmer.code = this.generateCode();
-      return await this.farmerRepository.create(farmer);
+      return await this.farmerRepository.create(farmer, userId);
     } catch (error) {
       if (
         error instanceof ConflictException ||
@@ -41,12 +43,12 @@ export class FarmerService {
     }
   }
 
-  async findAll(page?: number, limit?: number) {
+  async findAll(userId: string, page?: number, limit?: number) {
     if (page && limit) {
       const skip = (page - 1) * limit;
       const [items, totalRecords] = await Promise.all([
-        this.farmerRepository.findWithPagination(skip, limit),
-        this.farmerRepository.countAll(),
+        this.farmerRepository.findWithPagination(skip, limit, userId),
+        this.farmerRepository.countAll(userId),
       ]);
       const totalPages = Math.ceil(totalRecords / limit);
       return {
@@ -57,7 +59,7 @@ export class FarmerService {
         totalPages,
       };
     } else {
-      const items = await this.farmerRepository.findAll();
+      const items = await this.farmerRepository.findAll(userId);
       return items;
     }
   }
@@ -70,13 +72,19 @@ export class FarmerService {
     return farmer;
   }
 
-  async update(id: string, farmer: Partial<Farmer>): Promise<Farmer> {
+  async update(
+    id: string,
+    farmer: Partial<Farmer>,
+    userId: string,
+  ): Promise<Farmer> {
     try {
       const existingFarmerByPhone = await this.farmerRepository.findByPhone(
         farmer.phone,
+        userId,
       );
       const existingFarmerByEmail = await this.farmerRepository.findByEmail(
         farmer.email,
+        userId,
       );
 
       const existFarmer = await this.farmerRepository.findOne(id);

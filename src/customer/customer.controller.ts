@@ -7,8 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
-  HttpCode,
   Query,
+  Req,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -21,14 +21,21 @@ export class CustomerController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() customer: Customer) {
-    return this.customerService.create(customer);
+  async create(@Req() req: any, @Body() customer: Customer) {
+    const userId = req.user.userId;
+    await this.customerService.create(customer, userId);
+    return { message: 'Customer created successfully!' };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
-    return this.customerService.findAll(page, limit);
+  async findAll(
+    @Req() req: any,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    const userId = req.user.userId;
+    return this.customerService.findAll(userId, page, limit);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -40,16 +47,19 @@ export class CustomerController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
+    @Req() req: any,
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
-    return this.customerService.update(id, updateCustomerDto);
+    const userId = req.user.userId;
+    await this.customerService.update(id, updateCustomerDto, userId);
+    return { message: 'Customer updated successfully!' };
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  @HttpCode(204)
   async remove(@Param('id') id: string) {
     await this.customerService.remove(id);
+    return { message: 'Customer deleted successfully!' };
   }
 }

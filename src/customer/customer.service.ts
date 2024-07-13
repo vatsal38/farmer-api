@@ -15,20 +15,22 @@ export class CustomerService {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
-  async create(customer: Customer): Promise<Customer> {
+  async create(customer: Customer, userId: string): Promise<Customer> {
     try {
       const existingCustomerByPhone = await this.customerRepository.findByPhone(
         customer.phone,
+        userId,
       );
       const existingCustomerByEmail = await this.customerRepository.findByEmail(
         customer.email,
+        userId,
       );
       if (existingCustomerByPhone || existingCustomerByEmail) {
         throw new ConflictException('Customer is already exists');
       }
 
       customer.code = this.generateCode();
-      return await this.customerRepository.create(customer);
+      return await this.customerRepository.create(customer, userId);
     } catch (error) {
       if (
         error instanceof ConflictException ||
@@ -41,12 +43,12 @@ export class CustomerService {
     }
   }
 
-  async findAll(page?: number, limit?: number) {
+  async findAll(userId: string, page?: number, limit?: number) {
     if (page && limit) {
       const skip = (page - 1) * limit;
       const [items, totalRecords] = await Promise.all([
-        this.customerRepository.findWithPagination(skip, limit),
-        this.customerRepository.countAll(),
+        this.customerRepository.findWithPagination(skip, limit, userId),
+        this.customerRepository.countAll(userId),
       ]);
       const totalPages = Math.ceil(totalRecords / limit);
       return {
@@ -57,7 +59,7 @@ export class CustomerService {
         totalPages,
       };
     } else {
-      const items = await this.customerRepository.findAll();
+      const items = await this.customerRepository.findAll(userId);
       return items;
     }
   }
@@ -70,13 +72,19 @@ export class CustomerService {
     return customer;
   }
 
-  async update(id: string, customer: Partial<Customer>): Promise<Customer> {
+  async update(
+    id: string,
+    customer: Partial<Customer>,
+    userId: string,
+  ): Promise<Customer> {
     try {
       const existingCustomerByPhone = await this.customerRepository.findByPhone(
         customer.phone,
+        userId,
       );
       const existingCustomerByEmail = await this.customerRepository.findByEmail(
         customer.email,
+        userId,
       );
 
       const existingCustomer = await this.customerRepository.findOne(id);

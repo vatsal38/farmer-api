@@ -8,13 +8,17 @@ export class ExpenseMasterRepository {
     private expenseMasterModel: Model<ExpenseMasterDocument>,
   ) {}
 
-  async create(expenseMaster: ExpenseMaster): Promise<ExpenseMaster> {
+  async create(
+    expenseMaster: ExpenseMaster,
+    userId: string,
+  ): Promise<ExpenseMaster> {
+    expenseMaster.createdBy = userId;
     const newExpenseMaster = new this.expenseMasterModel(expenseMaster);
     return newExpenseMaster.save();
   }
 
-  async findAll(): Promise<ExpenseMaster[]> {
-    return this.expenseMasterModel.find().exec();
+  async findAll(userId: string): Promise<ExpenseMaster[]> {
+    return this.expenseMasterModel.find({ createdBy: userId }).exec();
   }
 
   async findOne(id: string): Promise<ExpenseMaster> {
@@ -34,18 +38,28 @@ export class ExpenseMasterRepository {
     return this.expenseMasterModel.findByIdAndDelete(id).exec();
   }
 
-  async findByPhone(phone: string): Promise<ExpenseMaster | null> {
-    return this.expenseMasterModel.findOne({ phone }).exec();
+  async findByPhone(
+    phone: string,
+    userId: string,
+  ): Promise<ExpenseMaster | null> {
+    return this.expenseMasterModel
+      .findOne({ phone }, { createdBy: userId })
+      .exec();
   }
 
   async findWithPagination(
     skip: number,
     limit: number,
+    userId: string,
   ): Promise<ExpenseMaster[]> {
-    return this.expenseMasterModel.find().skip(skip).limit(limit).exec();
+    return this.expenseMasterModel
+      .find({ createdBy: userId })
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
 
-  async countAll(): Promise<number> {
-    return this.expenseMasterModel.countDocuments().exec();
+  async countAll(userId: string): Promise<number> {
+    return this.expenseMasterModel.countDocuments({ createdBy: userId }).exec();
   }
 }

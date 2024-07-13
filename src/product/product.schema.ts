@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { IsNotEmpty, IsString, IsIn } from 'class-validator';
 
 export type ProductDocument = Product & Document;
@@ -19,12 +19,15 @@ export class Product {
   @IsNotEmpty({ message: 'Product name is required' })
   productName: string;
 
-  @Prop({ required: true, enum: ['active', 'inactive'] })
+  @Prop({ required: true })
   @IsString()
-  @IsIn(['active', 'inactive'], {
-    message: 'Type must be either "active" or "inactive"',
-  })
+  // @IsIn(['active', 'inactive'], {
+  //   message: 'Type must be either "active" or "inactive"',
+  // })
   type: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: string;
 
   @Prop()
   createdBy: string;

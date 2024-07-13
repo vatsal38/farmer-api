@@ -7,13 +7,15 @@ export class ProductRepository {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
 
-  async create(product: Product): Promise<Product> {
+  async create(product: Product, userId: string): Promise<Product> {
+    product.createdBy = userId;
+    product.user = userId;
     const newProduct = new this.productModel(product);
     return newProduct.save();
   }
 
-  async findAll(): Promise<Product[]> {
-    return this.productModel.find().exec();
+  async findAll(userId: string): Promise<Product[]> {
+    return this.productModel.find({ createdBy: userId }).exec();
   }
 
   async findOne(id: string): Promise<Product> {
@@ -22,7 +24,10 @@ export class ProductRepository {
 
   async update(id: string, product: Partial<Product>): Promise<Product> {
     return this.productModel
-      .findByIdAndUpdate(id, product, { new: true, runValidators: true })
+      .findByIdAndUpdate(id, product, {
+        new: true,
+        runValidators: true,
+      })
       .exec();
   }
 
@@ -30,15 +35,28 @@ export class ProductRepository {
     return this.productModel.findByIdAndDelete(id).exec();
   }
 
-  async findByProductName(productName: string): Promise<Product | null> {
-    return this.productModel.findOne({ productName }).exec();
+  async findByProductName(
+    productName: string,
+    userId: string,
+  ): Promise<Product | null> {
+    return this.productModel
+      .findOne({ productName }, { createdBy: userId })
+      .exec();
   }
 
-  async findWithPagination(skip: number, limit: number): Promise<Product[]> {
-    return this.productModel.find().skip(skip).limit(limit).exec();
+  async findWithPagination(
+    skip: number,
+    limit: number,
+    userId: string,
+  ): Promise<Product[]> {
+    return this.productModel
+      .find({ createdBy: userId })
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
 
-  async countAll(): Promise<number> {
-    return this.productModel.countDocuments().exec();
+  async countAll(userId: string): Promise<number> {
+    return this.productModel.countDocuments({ createdBy: userId }).exec();
   }
 }

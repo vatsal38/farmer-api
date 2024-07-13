@@ -7,13 +7,14 @@ export class CustomerRepository {
     @InjectModel(Customer.name) private customerModel: Model<CustomerDocument>,
   ) {}
 
-  async create(customer: Customer): Promise<Customer> {
+  async create(customer: Customer, userId: string): Promise<Customer> {
+    customer.createdBy = userId;
     const newCustomer = new this.customerModel(customer);
     return newCustomer.save();
   }
 
-  async findAll(): Promise<Customer[]> {
-    return this.customerModel.find().exec();
+  async findAll(userId: string): Promise<Customer[]> {
+    return this.customerModel.find({ createdBy: userId }).exec();
   }
 
   async findOne(id: string): Promise<Customer> {
@@ -30,19 +31,27 @@ export class CustomerRepository {
     return this.customerModel.findByIdAndDelete(id).exec();
   }
 
-  async findByPhone(phone: string): Promise<Customer | null> {
-    return this.customerModel.findOne({ phone }).exec();
+  async findByPhone(phone: string, userId: string): Promise<Customer | null> {
+    return this.customerModel.findOne({ phone }, { createdBy: userId }).exec();
   }
 
-  async findByEmail(email: string): Promise<Customer | null> {
-    return this.customerModel.findOne({ email }).exec();
+  async findByEmail(email: string, userId: string): Promise<Customer | null> {
+    return this.customerModel.findOne({ email }, { createdBy: userId }).exec();
   }
 
-  async findWithPagination(skip: number, limit: number): Promise<Customer[]> {
-    return this.customerModel.find().skip(skip).limit(limit).exec();
+  async findWithPagination(
+    skip: number,
+    limit: number,
+    userId: string,
+  ): Promise<Customer[]> {
+    return this.customerModel
+      .find({ createdBy: userId })
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
 
-  async countAll(): Promise<number> {
-    return this.customerModel.countDocuments().exec();
+  async countAll(userId: string): Promise<number> {
+    return this.customerModel.countDocuments({ createdBy: userId }).exec();
   }
 }

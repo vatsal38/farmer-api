@@ -7,8 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
-  HttpCode,
   Query,
+  Req,
 } from '@nestjs/common';
 import { FarmerService } from './farmer.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -21,14 +21,21 @@ export class FarmerController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() farmer: Farmer) {
-    return this.farmerService.create(farmer);
+  async create(@Req() req: any, @Body() farmer: Farmer) {
+    const userId = req.user.userId;
+    await this.farmerService.create(farmer, userId);
+    return { message: 'Farmer created successfully!' };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
-    return this.farmerService.findAll(page, limit);
+  async findAll(
+    @Req() req: any,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    const userId = req.user.userId;
+    return this.farmerService.findAll(userId, page, limit);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -40,16 +47,19 @@ export class FarmerController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
+    @Req() req: any,
     @Param('id') id: string,
     @Body() updateFarmerDto: UpdateFarmerDto,
   ) {
-    return this.farmerService.update(id, updateFarmerDto);
+    const userId = req.user.userId;
+    await this.farmerService.update(id, updateFarmerDto, userId);
+    return { message: 'Farmer updated successfully!' };
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  @HttpCode(204)
   async remove(@Param('id') id: string) {
     await this.farmerService.remove(id);
+    return { message: 'Farmer deleted successfully!' };
   }
 }
