@@ -14,8 +14,12 @@ export class ProductRepository {
     return newProduct.save();
   }
 
-  async findAll(userId: string): Promise<Product[]> {
-    return this.productModel.find({ createdBy: userId }).exec();
+  async findAll(userId: string, isSuperAdmin?: boolean): Promise<Product[]> {
+    if (isSuperAdmin) {
+      return this.productModel.find().exec();
+    } else {
+      return this.productModel.find({ createdBy: userId }).exec();
+    }
   }
 
   async findOne(id: string): Promise<Product> {
@@ -48,15 +52,24 @@ export class ProductRepository {
     skip: number,
     limit: number,
     userId: string,
+    isSuperAdmin?: boolean,
   ): Promise<Product[]> {
-    return this.productModel
-      .find({ createdBy: userId })
-      .skip(skip)
-      .limit(limit)
-      .exec();
+    if (isSuperAdmin) {
+      return this.productModel.find().skip(skip).limit(limit).exec();
+    } else {
+      return this.productModel
+        .find({ createdBy: userId })
+        .skip(skip)
+        .limit(limit)
+        .exec();
+    }
   }
 
-  async countAll(userId: string): Promise<number> {
-    return this.productModel.countDocuments({ createdBy: userId }).exec();
+  async countAll(userId: string, isSuperAdmin?: boolean): Promise<number> {
+    if (isSuperAdmin) {
+      return this.productModel.countDocuments().exec();
+    } else {
+      return this.productModel.countDocuments({ createdBy: userId }).exec();
+    }
   }
 }

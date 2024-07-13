@@ -13,8 +13,12 @@ export class FarmerRepository {
     return newFarmer.save();
   }
 
-  async findAll(userId: string): Promise<Farmer[]> {
-    return this.farmerModel.find({ createdBy: userId }).exec();
+  async findAll(userId: string, isSuperAdmin: boolean): Promise<Farmer[]> {
+    if (isSuperAdmin) {
+      return this.farmerModel.find().exec();
+    } else {
+      return this.farmerModel.find({ createdBy: userId }).exec();
+    }
   }
 
   async findOne(id: string): Promise<Farmer> {
@@ -41,11 +45,24 @@ export class FarmerRepository {
     skip: number,
     limit: number,
     userId: string,
+    isSuperAdmin: boolean,
   ): Promise<Farmer[]> {
-    return this.farmerModel.find().skip(skip).limit(limit).exec();
+    if (isSuperAdmin) {
+      return this.farmerModel.find().skip(skip).limit(limit).exec();
+    } else {
+      return this.farmerModel
+        .find({ createdBy: userId })
+        .skip(skip)
+        .limit(limit)
+        .exec();
+    }
   }
 
-  async countAll(userId: string): Promise<number> {
-    return this.farmerModel.countDocuments({ createdBy: userId }).exec();
+  async countAll(userId: string, isSuperAdmin: boolean): Promise<number> {
+    if (isSuperAdmin) {
+      return this.farmerModel.countDocuments().exec();
+    } else {
+      return this.farmerModel.countDocuments({ createdBy: userId }).exec();
+    }
   }
 }

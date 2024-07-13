@@ -101,9 +101,7 @@ export class UserService {
           otp,
         },
       });
-      throw new UnauthorizedException(
-        'You are not verified we sent you otp on mail, verify first',
-      );
+      return user;
     } else {
       return null;
     }
@@ -157,19 +155,33 @@ export class UserService {
     const userData: any = await this.userRepository.findByUsername(
       user.username,
     );
-    const payload = { username: userData.username, sub: userData._id };
-    return {
-      access_token: this.jwtService.sign(payload),
-      user: {
-        id: userData._id,
-        username: userData.username,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        role: userData.role,
-        isVerified: userData.isVerified,
-        isProduct: userData.isProduct,
-      },
+    const payload = {
+      username: userData.username,
+      sub: userData._id,
+      role: userData.role,
     };
+    if (userData.isVerified) {
+      return {
+        message: 'Login successfully',
+        data: {
+          access_token: this.jwtService.sign(payload),
+          user: {
+            id: userData._id,
+            username: userData.username,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            role: userData.role,
+            isVerified: userData.isVerified,
+            isProduct: userData.isProduct,
+          },
+        },
+      };
+    } else {
+      return {
+        message: 'You are not verified we sent you otp on mail, verify first',
+        isVerified: userData.isVerified,
+      };
+    }
   }
 }

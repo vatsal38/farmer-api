@@ -17,8 +17,15 @@ export class ExpenseMasterRepository {
     return newExpenseMaster.save();
   }
 
-  async findAll(userId: string): Promise<ExpenseMaster[]> {
-    return this.expenseMasterModel.find({ createdBy: userId }).exec();
+  async findAll(
+    userId: string,
+    isSuperAdmin: boolean,
+  ): Promise<ExpenseMaster[]> {
+    if (isSuperAdmin) {
+      return this.expenseMasterModel.find().exec();
+    } else {
+      return this.expenseMasterModel.find({ createdBy: userId }).exec();
+    }
   }
 
   async findOne(id: string): Promise<ExpenseMaster> {
@@ -51,15 +58,26 @@ export class ExpenseMasterRepository {
     skip: number,
     limit: number,
     userId: string,
+    isSuperAdmin: boolean,
   ): Promise<ExpenseMaster[]> {
-    return this.expenseMasterModel
-      .find({ createdBy: userId })
-      .skip(skip)
-      .limit(limit)
-      .exec();
+    if (isSuperAdmin) {
+      return this.expenseMasterModel.find().skip(skip).limit(limit).exec();
+    } else {
+      return this.expenseMasterModel
+        .find({ createdBy: userId })
+        .skip(skip)
+        .limit(limit)
+        .exec();
+    }
   }
 
-  async countAll(userId: string): Promise<number> {
-    return this.expenseMasterModel.countDocuments({ createdBy: userId }).exec();
+  async countAll(userId: string, isSuperAdmin: boolean): Promise<number> {
+    if (isSuperAdmin) {
+      return this.expenseMasterModel.countDocuments().exec();
+    } else {
+      return this.expenseMasterModel
+        .countDocuments({ createdBy: userId })
+        .exec();
+    }
   }
 }

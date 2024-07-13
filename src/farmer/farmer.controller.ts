@@ -34,8 +34,9 @@ export class FarmerController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
+    const isSuperAdmin = req.user.role === 'superadmin';
     const userId = req.user.userId;
-    return this.farmerService.findAll(userId, page, limit);
+    return this.farmerService.findAll(userId, page, limit, isSuperAdmin);
   }
 
   @UseGuards(JwtAuthGuard)

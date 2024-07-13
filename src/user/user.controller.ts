@@ -36,10 +36,7 @@ export class UserController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Body() data: any) {
-    return {
-      message: 'Login successfully',
-      data: await this.userService.login(data),
-    };
+    return await this.userService.login(data);
   }
 
   @Post('forgot-password')

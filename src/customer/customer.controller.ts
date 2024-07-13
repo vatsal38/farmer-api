@@ -34,8 +34,9 @@ export class CustomerController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
+    const isSuperAdmin = req.user.role === 'superadmin';
     const userId = req.user.userId;
-    return this.customerService.findAll(userId, page, limit);
+    return this.customerService.findAll(userId, page, limit, isSuperAdmin);
   }
 
   @UseGuards(JwtAuthGuard)

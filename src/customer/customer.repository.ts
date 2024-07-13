@@ -13,8 +13,12 @@ export class CustomerRepository {
     return newCustomer.save();
   }
 
-  async findAll(userId: string): Promise<Customer[]> {
-    return this.customerModel.find({ createdBy: userId }).exec();
+  async findAll(userId: string, isSuperAdmin: boolean): Promise<Customer[]> {
+    if (isSuperAdmin) {
+      return this.customerModel.find().exec();
+    } else {
+      return this.customerModel.find({ createdBy: userId }).exec();
+    }
   }
 
   async findOne(id: string): Promise<Customer> {
@@ -43,15 +47,24 @@ export class CustomerRepository {
     skip: number,
     limit: number,
     userId: string,
+    isSuperAdmin: boolean,
   ): Promise<Customer[]> {
-    return this.customerModel
-      .find({ createdBy: userId })
-      .skip(skip)
-      .limit(limit)
-      .exec();
+    if (isSuperAdmin) {
+      return this.customerModel.find().skip(skip).limit(limit).exec();
+    } else {
+      return this.customerModel
+        .find({ createdBy: userId })
+        .skip(skip)
+        .limit(limit)
+        .exec();
+    }
   }
 
-  async countAll(userId: string): Promise<number> {
-    return this.customerModel.countDocuments({ createdBy: userId }).exec();
+  async countAll(userId: string, isSuperAdmin: boolean): Promise<number> {
+    if (isSuperAdmin) {
+      return this.customerModel.countDocuments().exec();
+    } else {
+      return this.customerModel.countDocuments({ createdBy: userId }).exec();
+    }
   }
 }

@@ -28,7 +28,6 @@ export class Product {
   type: string;
 
   @Prop({ default: true })
-  @IsBoolean()
   status: boolean;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })

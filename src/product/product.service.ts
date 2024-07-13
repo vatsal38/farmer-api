@@ -106,12 +106,22 @@ export class ProductService {
     }
   }
 
-  async findAll(userId: string, page?: number, limit?: number) {
+  async findAll(
+    userId: string,
+    page?: number,
+    limit?: number,
+    isSuperAdmin?: boolean,
+  ) {
     if (page && limit) {
       const skip = (page - 1) * limit;
       const [items, totalRecords] = await Promise.all([
-        this.productRepository.findWithPagination(skip, limit, userId),
-        this.productRepository.countAll(userId),
+        this.productRepository.findWithPagination(
+          skip,
+          limit,
+          userId,
+          isSuperAdmin,
+        ),
+        this.productRepository.countAll(userId, isSuperAdmin),
       ]);
       const totalPages = Math.ceil(totalRecords / limit);
       return {
@@ -122,7 +132,7 @@ export class ProductService {
         totalPages,
       };
     } else {
-      const items = await this.productRepository.findAll(userId);
+      const items = await this.productRepository.findAll(userId, isSuperAdmin);
       return items;
     }
   }

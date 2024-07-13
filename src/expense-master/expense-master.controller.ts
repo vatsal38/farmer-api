@@ -34,8 +34,9 @@ export class ExpenseMasterController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
+    const isSuperAdmin = req.user.role === 'superadmin';
     const userId = req.user.userId;
-    return this.expenseMasterService.findAll(userId, page, limit);
+    return this.expenseMasterService.findAll(userId, page, limit, isSuperAdmin);
   }
 
   @UseGuards(JwtAuthGuard)
