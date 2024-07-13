@@ -69,8 +69,10 @@ export class UserService {
   async verifyOTP(username: string, otp: string): Promise<boolean> {
     const user: any = await this.userRepository.findByUsername(username);
     if (!user) {
-      new NotFoundException('User not found');
+      throw new NotFoundException('User not found');
     }
+    console.log('user.otp::: ', user.otp);
+    console.log('otp::: ', otp);
     if (user && user.otp === otp && user.otpExpiration > new Date()) {
       await this.userRepository.markAsVerified(username);
       return true;
@@ -81,7 +83,7 @@ export class UserService {
   async validateUser(username: string, password: string): Promise<any> {
     const user: any = await this.userRepository.findByUsername(username);
     if (!user) {
-      new NotFoundException('User not found');
+      throw new NotFoundException('User not found');
     }
     if (
       user &&
@@ -113,7 +115,7 @@ export class UserService {
   async sendPasswordResetOTP(email: string): Promise<void> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
@@ -158,6 +160,10 @@ export class UserService {
     const userData: any = await this.userRepository.findByUsername(
       user.username,
     );
+
+    if (!userData) {
+      throw new NotFoundException('User not found');
+    }
     const payload = {
       username: userData.username,
       sub: userData._id,

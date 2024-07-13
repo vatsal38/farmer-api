@@ -29,8 +29,11 @@ export class UserController {
     },
   ) {
     const { username, otp } = body;
-    await this.userService.verifyOTP(username, otp);
-    return { message: 'Verified successfully.' };
+    if (await this.userService.verifyOTP(username, otp)) {
+      return { message: 'Verified successfully.' };
+    } else {
+      return { message: 'Otp not matched.' };
+    }
   }
 
   @UseGuards(LocalAuthGuard)
