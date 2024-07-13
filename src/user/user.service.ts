@@ -2,6 +2,8 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcryptjs';
@@ -65,7 +67,10 @@ export class UserService {
   }
 
   async verifyOTP(username: string, otp: string): Promise<boolean> {
-    const user = await this.userRepository.findByUsername(username);
+    const user: any = await this.userRepository.findByUsername(username);
+    if (!user) {
+      new NotFoundException('User not found');
+    }
     if (user && user.otp === otp && user.otpExpiration > new Date()) {
       await this.userRepository.markAsVerified(username);
       return true;
@@ -74,16 +79,34 @@ export class UserService {
   }
 
   async validateUser(username: string, password: string): Promise<any> {
-    const user = await this.userRepository.findByUsername(username);
+    const user: any = await this.userRepository.findByUsername(username);
     if (
       user &&
       user.isVerified &&
       (await bcrypt.compare(password, user.password))
     ) {
       const { password, ...result } = user;
+
       return result;
+    } else if (!user.isVerified) {
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
+      const otpExpiration = new Date();
+      otpExpiration.setMinutes(otpExpiration.getMinutes() + 10);
+      await this.userRepository.update(username, otp, otpExpiration);
+      await this.mailerService.sendMail({
+        to: user.email,
+        subject: 'Your OTP Code',
+        template: './otp',
+        context: {
+          otp,
+        },
+      });
+      throw new UnauthorizedException(
+        'You are not verified we sent you otp on mail, verify first',
+      );
+    } else {
+      return null;
     }
-    return null;
   }
 
   async sendPasswordResetOTP(email: string): Promise<void> {

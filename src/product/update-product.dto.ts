@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, IsIn, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsIn,
+  IsOptional,
+  IsBoolean,
+} from 'class-validator';
 
 export class UpdateProductDto {
   @IsOptional()
@@ -11,8 +17,12 @@ export class UpdateProductDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(['active', 'inactive'], {
-    message: 'Type must be either "active" or "inactive"',
-  })
+  // @IsIn(['active', 'inactive'], {
+  //   message: 'Type must be either "active" or "inactive"',
+  // })
   type?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  status?: boolean;
 }

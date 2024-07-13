@@ -54,6 +54,7 @@ export class ProductService {
                   code: product.code,
                   type: product.type,
                   image: product.image,
+                  status: true,
                   user: null,
                   createdBy: null,
                   createdAt: new Date(),

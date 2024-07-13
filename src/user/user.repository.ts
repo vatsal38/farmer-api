@@ -78,4 +78,12 @@ export class UserRepository {
       )
       .exec();
   }
+
+  async update(
+    username: string,
+    otp: string,
+    otpExpiration: Date,
+  ): Promise<void> {
+    await this.userModel.updateOne({ username }, { otp, otpExpiration }).exec();
+  }
 }
