@@ -71,8 +71,6 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    console.log('user.otp::: ', user.otp);
-    console.log('otp::: ', otp);
     if (user && user.otp === otp && user.otpExpiration > new Date()) {
       await this.userRepository.markAsVerified(username);
       return true;
