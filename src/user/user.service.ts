@@ -80,6 +80,9 @@ export class UserService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user: any = await this.userRepository.findByUsername(username);
+    if (!user) {
+      new NotFoundException('User not found');
+    }
     if (
       user &&
       user.isVerified &&
