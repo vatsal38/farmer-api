@@ -14,58 +14,58 @@ export type FarmerDocument = Farmer & Document;
 @Schema()
 export class Farmer {
   @Prop({ unique: true })
-  code: string;
+  code?: string;
 
   @Prop({ required: true })
   @IsString({ message: 'Name must be a string' })
   @IsNotEmpty({ message: 'Name is required' })
-  name: string;
+  name?: string;
 
   @Prop({ required: true, unique: true })
   @IsString({ message: 'Phone number must be a string' })
   @IsPhoneNumber('IN', {
     message: 'Phone number must be a valid Indian phone number',
   })
-  phone: string;
+  phone?: string;
 
   @Prop({ required: true })
   @IsString({ message: 'Village must be a string' })
   @IsNotEmpty({ message: 'Village is required' })
-  village: string;
+  village?: string;
 
   @Prop({ required: true })
   @IsString({ message: 'Gender must be a string' })
-  gender: string;
+  gender?: string;
 
   @Prop({ default: true })
-  status: boolean;
+  status?: boolean;
 
   @Prop({ required: true, unique: true })
   @IsString({ message: 'Username must be a string' })
   @IsNotEmpty({ message: 'Username is required' })
-  username: string;
+  username?: string;
 
   @Prop({ required: true })
   @IsString({ message: 'Image URL must be a string' })
   @IsNotEmpty({ message: 'Image URL is required' })
-  image: string;
+  image?: string;
 
   @Prop({ required: true, unique: true })
   @IsString({ message: 'Email must be a string' })
   @IsEmail({}, { message: 'Invalid email format' })
-  email: string;
+  email?: string;
 
   @Prop()
-  createdBy: string;
+  createdBy?: string;
 
   @Prop({ default: Date.now })
-  createdAt: Date;
+  createdAt?: Date;
 
   @Prop()
-  updatedBy: string;
+  updatedBy?: string;
 
   @Prop({ default: Date.now })
-  updatedAt: Date;
+  updatedAt?: Date;
 }
 
 export const FarmerSchema = SchemaFactory.createForClass(Farmer);
