@@ -22,15 +22,15 @@ export class ExpenseMasterService {
     userId: string,
   ): Promise<ExpenseMaster> {
     try {
-      const existingExpenseMasterByPhone =
-        await this.expenseMasterRepository.findByPhone(
-          expenseMaster.phone,
-          userId,
-        );
+      // const existingExpenseMasterByPhone =
+      //   await this.expenseMasterRepository.findByPhone(
+      //     expenseMaster.phone,
+      //     userId,
+      //   );
 
-      if (existingExpenseMasterByPhone) {
-        throw new ConflictException('ExpenseMaster is already exists');
-      }
+      // if (existingExpenseMasterByPhone) {
+      //   throw new ConflictException('ExpenseMaster is already exists');
+      // }
       expenseMaster.code = this.generateCode();
       return await this.expenseMasterRepository.create(expenseMaster, userId);
     } catch (error) {
@@ -95,15 +95,15 @@ export class ExpenseMasterService {
     userId: string,
   ): Promise<ExpenseMaster> {
     try {
-      const existingExpenseMasterByPhone =
-        await this.expenseMasterRepository.findByPhone(
-          expenseMaster.phone,
-          userId,
-        );
+      // const existingExpenseMasterByPhone =
+      //   await this.expenseMasterRepository.findByPhone(
+      //     expenseMaster.phone,
+      //     userId,
+      //   );
 
-      if (existingExpenseMasterByPhone) {
-        throw new ConflictException('ExpenseMaster is already exists');
-      }
+      // if (existingExpenseMasterByPhone) {
+      //   throw new ConflictException('ExpenseMaster is already exists');
+      // }
 
       const expenseMasterExist = await this.expenseMasterRepository.findOne(id);
       if (!expenseMasterExist) {

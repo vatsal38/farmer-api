@@ -7,20 +7,20 @@ export type ProductDocument = Product & Document;
 @Schema()
 export class Product {
   @Prop({ required: true })
-  @IsString()
+  @IsString({ message: 'Image must be a string' })
   @IsNotEmpty({ message: 'Image is required' })
   image: string;
 
   @Prop({ unique: true })
   code: string;
 
-  @Prop({ required: true })
-  @IsString()
+  @Prop({ required: true, unique: true })
+  @IsString({ message: 'Product name must be a string' })
   @IsNotEmpty({ message: 'Product name is required' })
   productName: string;
 
   @Prop({ required: true })
-  @IsString()
+  @IsString({ message: 'Type must be a string' })
   // @IsIn(['active', 'inactive'], {
   //   message: 'Type must be either "active" or "inactive"',
   // })

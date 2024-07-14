@@ -21,7 +21,7 @@ export class Farmer {
   @IsNotEmpty({ message: 'Name is required' })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   @IsString({ message: 'Phone number must be a string' })
   @IsPhoneNumber('IN', {
     message: 'Phone number must be a valid Indian phone number',
@@ -45,7 +45,7 @@ export class Farmer {
   @IsNotEmpty({ message: 'Image URL is required' })
   image: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   @IsString({ message: 'Email must be a string' })
   @IsEmail({}, { message: 'Invalid email format' })
   email: string;

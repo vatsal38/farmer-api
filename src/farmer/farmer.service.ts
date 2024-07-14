@@ -17,17 +17,17 @@ export class FarmerService {
 
   async create(farmer: Farmer, userId: string): Promise<Farmer> {
     try {
-      const existingFarmerByPhone = await this.farmerRepository.findByPhone(
-        farmer.phone,
-        userId,
-      );
-      const existingFarmerByEmail = await this.farmerRepository.findByEmail(
-        farmer.email,
-        userId,
-      );
-      if (existingFarmerByPhone || existingFarmerByEmail) {
-        throw new ConflictException('Farmer is already exists');
-      }
+      // const existingFarmerByPhone = await this.farmerRepository.findByPhone(
+      //   farmer.phone,
+      //   userId,
+      // );
+      // const existingFarmerByEmail = await this.farmerRepository.findByEmail(
+      //   farmer.email,
+      //   userId,
+      // );
+      // if (existingFarmerByPhone || existingFarmerByEmail) {
+      //   throw new ConflictException('Farmer is already exists');
+      // }
 
       farmer.code = this.generateCode();
       return await this.farmerRepository.create(farmer, userId);
@@ -88,23 +88,24 @@ export class FarmerService {
     userId: string,
   ): Promise<Farmer> {
     try {
-      const existingFarmerByPhone = await this.farmerRepository.findByPhone(
-        farmer.phone,
-        userId,
-      );
-      const existingFarmerByEmail = await this.farmerRepository.findByEmail(
-        farmer.email,
-        userId,
-      );
+      // const existingFarmerByPhone = await this.farmerRepository.findByPhone(
+      //   farmer.phone,
+      //   userId,
+      // );
+      // const existingFarmerByEmail = await this.farmerRepository.findByEmail(
+      //   farmer.email,
+      //   userId,
+      // );
+
+      // if (existingFarmerByPhone || existingFarmerByEmail) {
+      //   throw new ConflictException('Farmer is already exists');
+      // }
 
       const existFarmer = await this.farmerRepository.findOne(id);
       if (!existFarmer) {
         throw new NotFoundException('Farmer not found');
       }
 
-      if (existingFarmerByPhone || existingFarmerByEmail) {
-        throw new ConflictException('Farmer is already exists');
-      }
       return await this.farmerRepository.update(id, farmer);
     } catch (error) {
       if (

@@ -75,13 +75,13 @@ export class ProductService {
 
   async create(product: Product, userId: string): Promise<Product> {
     try {
-      const existingProduct = await this.productRepository.findByProductName(
-        product.productName,
-        userId,
-      );
-      if (existingProduct) {
-        throw new ConflictException('Product with this name already exists');
-      }
+      // const existingProduct = await this.productRepository.findByProductName(
+      //   product.productName,
+      //   userId,
+      // );
+      // if (existingProduct) {
+      //   throw new ConflictException('Product with this name already exists');
+      // }
       product.code = this.generateCode();
       return await this.productRepository.create(product, userId);
     } catch (error) {
@@ -141,13 +141,13 @@ export class ProductService {
     userId: string,
   ): Promise<Product> {
     try {
-      const existingProduct = await this.productRepository.findByProductName(
-        product.productName,
-        userId,
-      );
-      if (existingProduct) {
-        throw new ConflictException('Product with this name already exists');
-      }
+      // const existingProduct = await this.productRepository.findByProductName(
+      //   product.productName,
+      //   userId,
+      // );
+      // if (existingProduct) {
+      //   throw new ConflictException('Product with this name already exists');
+      // }
 
       const existProduct = await this.productRepository.findOne(id);
       if (!existProduct) {

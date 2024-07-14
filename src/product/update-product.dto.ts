@@ -16,13 +16,13 @@ export class UpdateProductDto {
   productName?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Type should be a string' })
   // @IsIn(['active', 'inactive'], {
   //   message: 'Type must be either "active" or "inactive"',
   // })
   type?: string;
 
   @IsOptional()
-  @IsBoolean()
+  @IsBoolean({ message: 'Status should be a true or false' })
   status?: boolean;
 }

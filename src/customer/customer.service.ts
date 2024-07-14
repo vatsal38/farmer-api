@@ -17,17 +17,17 @@ export class CustomerService {
 
   async create(customer: Customer, userId: string): Promise<Customer> {
     try {
-      const existingCustomerByPhone = await this.customerRepository.findByPhone(
-        customer.phone,
-        userId,
-      );
-      const existingCustomerByEmail = await this.customerRepository.findByEmail(
-        customer.email,
-        userId,
-      );
-      if (existingCustomerByPhone || existingCustomerByEmail) {
-        throw new ConflictException('Customer is already exists');
-      }
+      // const existingCustomerByPhone = await this.customerRepository.findByPhone(
+      //   customer.phone,
+      //   userId,
+      // );
+      // const existingCustomerByEmail = await this.customerRepository.findByEmail(
+      //   customer.email,
+      //   userId,
+      // );
+      // if (existingCustomerByPhone || existingCustomerByEmail) {
+      //   throw new ConflictException('Customer is already exists');
+      // }
 
       customer.code = this.generateCode();
       return await this.customerRepository.create(customer, userId);
@@ -88,23 +88,23 @@ export class CustomerService {
     userId: string,
   ): Promise<Customer> {
     try {
-      const existingCustomerByPhone = await this.customerRepository.findByPhone(
-        customer.phone,
-        userId,
-      );
-      const existingCustomerByEmail = await this.customerRepository.findByEmail(
-        customer.email,
-        userId,
-      );
+      // const existingCustomerByPhone = await this.customerRepository.findByPhone(
+      //   customer.phone,
+      //   userId,
+      // );
+      // const existingCustomerByEmail = await this.customerRepository.findByEmail(
+      //   customer.email,
+      //   userId,
+      // );
+
+      // if (existingCustomerByPhone || existingCustomerByEmail) {
+      //   throw new ConflictException('Customer is already exists');
+      // }
 
       const existingCustomer = await this.customerRepository.findOne(id);
 
       if (!existingCustomer) {
         throw new NotFoundException('Customer not found');
-      }
-
-      if (existingCustomerByPhone || existingCustomerByEmail) {
-        throw new ConflictException('Customer is already exists');
       }
 
       return await this.customerRepository.update(id, customer);

@@ -1,10 +1,7 @@
 import {
-  IsNotEmpty,
   IsString,
-  IsIn,
   IsOptional,
   IsPhoneNumber,
-  IsEmail,
   IsBoolean,
 } from 'class-validator';
 
@@ -35,10 +32,6 @@ export class UpdateCustomerDto {
   @IsOptional()
   @IsString({ message: 'Image URL must be a string' })
   image?: string;
-
-  @IsOptional()
-  @IsString({ message: 'Address must be a string' })
-  address: string;
 
   @IsOptional()
   @IsString({ message: 'Remarks must be a string' })

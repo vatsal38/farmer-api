@@ -1,13 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import {
-  IsNotEmpty,
-  IsString,
-  IsPhoneNumber,
-  IsUUID,
-  IsBoolean,
-  IsEmail,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsPhoneNumber, IsEmail } from 'class-validator';
 
 export type CustomerDocument = Customer & Document;
 
@@ -26,12 +19,12 @@ export class Customer {
   @IsNotEmpty({ message: 'Name is required' })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   @IsString({ message: 'Email must be a string' })
   @IsEmail({}, { message: 'Invalid email format' })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   @IsString({ message: 'Phone number must be a string' })
   @IsPhoneNumber('IN', {
     message: 'Phone number must be a valid Indian phone number',
@@ -49,11 +42,6 @@ export class Customer {
 
   @Prop({ default: true })
   status: boolean;
-
-  @Prop()
-  @IsString({ message: 'Address must be a string' })
-  @IsNotEmpty({ message: 'Address is required' })
-  address: string;
 
   @Prop()
   @IsString({ message: 'Remarks must be a string' })
