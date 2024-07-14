@@ -40,6 +40,11 @@ export class Farmer {
   @Prop({ default: true })
   status: boolean;
 
+  @Prop({ required: true, unique: true })
+  @IsString({ message: 'Username must be a string' })
+  @IsNotEmpty({ message: 'Username is required' })
+  username: string;
+
   @Prop({ required: true })
   @IsString({ message: 'Image URL must be a string' })
   @IsNotEmpty({ message: 'Image URL is required' })

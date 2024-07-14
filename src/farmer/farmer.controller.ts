@@ -50,7 +50,7 @@ export class FarmerController {
   async update(
     @Req() req: any,
     @Param('id') id: string,
-    @Body() updateFarmerDto: UpdateFarmerDto,
+    @Body() updateFarmerDto: Farmer,
   ) {
     const userId = req.user.userId;
     await this.farmerService.update(id, updateFarmerDto, userId);

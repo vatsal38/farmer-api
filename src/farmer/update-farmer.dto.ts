@@ -35,4 +35,8 @@ export class UpdateFarmerDto {
   @IsOptional()
   @IsString({ message: 'Image URL must be a string' })
   image?: string;
+
+  @IsOptional()
+  @IsString({ message: 'Username must be a string' })
+  username?: string;
 }
