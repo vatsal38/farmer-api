@@ -39,4 +39,8 @@ export class UpdateFarmerDto {
   @IsOptional()
   @IsString({ message: 'Username must be a string' })
   username?: string;
+
+  @IsOptional()
+  @IsEmail({}, { message: 'Invalid email format' })
+  email?: string;
 }

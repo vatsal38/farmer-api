@@ -27,4 +27,8 @@ export class UpdateExpenseMasterDto {
   @IsOptional()
   @IsString({ message: 'Remarks must be a string' })
   remarks?: string;
+
+  @IsOptional()
+  @IsString({ message: 'Image URL must be a string' })
+  image?: string;
 }

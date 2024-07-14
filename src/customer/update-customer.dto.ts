@@ -3,6 +3,7 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsBoolean,
+  IsEmail,
 } from 'class-validator';
 
 export class UpdateCustomerDto {
@@ -36,4 +37,12 @@ export class UpdateCustomerDto {
   @IsOptional()
   @IsString({ message: 'Remarks must be a string' })
   remarks: string;
+
+  @IsOptional()
+  @IsString({ message: 'Username must be a string' })
+  username?: string;
+
+  @IsOptional()
+  @IsEmail({}, { message: 'Invalid email format' })
+  email?: string;
 }

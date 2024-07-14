@@ -36,6 +36,11 @@ export class Customer {
   @IsNotEmpty({ message: 'Village is required' })
   village: string;
 
+  @Prop({ required: true, unique: true })
+  @IsString({ message: 'Username must be a string' })
+  @IsNotEmpty({ message: 'Username is required' })
+  username: string;
+
   @Prop({ required: true })
   @IsString({ message: 'Gender must be a string' })
   gender: string;

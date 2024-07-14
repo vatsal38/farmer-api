@@ -12,6 +12,11 @@ export type ExpenseMasterDocument = ExpenseMaster & Document;
 
 @Schema()
 export class ExpenseMaster {
+  @Prop({ required: true })
+  @IsString({ message: 'Image URL must be a string' })
+  @IsNotEmpty({ message: 'Image URL is required' })
+  image: string;
+
   @Prop({ unique: true })
   code: string;
 
@@ -27,6 +32,7 @@ export class ExpenseMaster {
   })
   phone: string;
 
+  
   @Prop({ default: true })
   status: boolean;
 
