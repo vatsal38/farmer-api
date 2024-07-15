@@ -32,6 +32,15 @@ export class FarmerService {
       farmer.code = this.generateCode();
       return await this.farmerRepository.create(farmer, userId);
     } catch (error) {
+      if (error.keyPattern && error.keyPattern.phone) {
+        throw new ConflictException('Phone number already exists');
+      }
+      if (error.keyPattern && error.keyPattern.email) {
+        throw new ConflictException('Email already exists');
+      }
+      if (error.keyPattern && error.keyPattern.username) {
+        throw new ConflictException('Username already exists');
+      }
       if (
         error instanceof ConflictException ||
         error.response?.statusCode === 409
@@ -108,6 +117,15 @@ export class FarmerService {
 
       return await this.farmerRepository.update(id, farmer);
     } catch (error) {
+      if (error.keyPattern && error.keyPattern.phone) {
+        throw new ConflictException('Phone number already exists');
+      }
+      if (error.keyPattern && error.keyPattern.email) {
+        throw new ConflictException('Email already exists');
+      }
+      if (error.keyPattern && error.keyPattern.username) {
+        throw new ConflictException('Username already exists');
+      }
       if (
         error instanceof ConflictException ||
         error instanceof NotFoundException ||

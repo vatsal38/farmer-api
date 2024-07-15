@@ -14,7 +14,7 @@ export class Product {
   @Prop({ unique: true })
   code: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   @IsString({ message: 'Product name must be a string' })
   @IsNotEmpty({ message: 'Product name is required' })
   productName: string;

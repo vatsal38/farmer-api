@@ -32,6 +32,15 @@ export class CustomerService {
       customer.code = this.generateCode();
       return await this.customerRepository.create(customer, userId);
     } catch (error) {
+      if (error.keyPattern && error.keyPattern.phone) {
+        throw new ConflictException('Phone number already exists');
+      }
+      if (error.keyPattern && error.keyPattern.email) {
+        throw new ConflictException('Email already exists');
+      }
+      if (error.keyPattern && error.keyPattern.username) {
+        throw new ConflictException('Username already exists');
+      }
       if (
         error instanceof ConflictException ||
         error.response?.statusCode === 409
@@ -109,6 +118,15 @@ export class CustomerService {
 
       return await this.customerRepository.update(id, customer);
     } catch (error) {
+      if (error.keyPattern && error.keyPattern.phone) {
+        throw new ConflictException('Phone number already exists');
+      }
+      if (error.keyPattern && error.keyPattern.email) {
+        throw new ConflictException('Email already exists');
+      }
+      if (error.keyPattern && error.keyPattern.username) {
+        throw new ConflictException('Username already exists');
+      }
       if (
         error instanceof ConflictException ||
         error instanceof NotFoundException ||

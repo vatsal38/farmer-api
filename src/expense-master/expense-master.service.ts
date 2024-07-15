@@ -34,6 +34,9 @@ export class ExpenseMasterService {
       expenseMaster.code = this.generateCode();
       return await this.expenseMasterRepository.create(expenseMaster, userId);
     } catch (error) {
+      if (error.keyPattern && error.keyPattern.phone) {
+        throw new ConflictException('Phone number already exists');
+      }
       if (
         error instanceof ConflictException ||
         error.response?.statusCode === 409
@@ -112,6 +115,9 @@ export class ExpenseMasterService {
 
       return await this.expenseMasterRepository.update(id, expenseMaster);
     } catch (error) {
+      if (error.keyPattern && error.keyPattern.phone) {
+        throw new ConflictException('Phone number already exists');
+      }
       if (
         error instanceof ConflictException ||
         error instanceof NotFoundException ||
