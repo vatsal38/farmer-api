@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
   IsOptional,
@@ -9,6 +10,7 @@ import {
 export class UpdateCustomerDto {
   @IsOptional()
   @IsString({ message: 'Name must be a string' })
+  @ApiProperty({ example: 'string', description: 'string', required: false })
   name?: string;
 
   @IsOptional()
@@ -16,14 +18,21 @@ export class UpdateCustomerDto {
   @IsPhoneNumber('IN', {
     message: 'Phone number must be a valid Indian phone number',
   })
+  @ApiProperty({
+    example: 'string',
+    description: '1234567789',
+    required: false,
+  })
   phone?: string;
 
   @IsOptional()
   @IsString({ message: 'Village must be a string' })
+  @ApiProperty({ example: 'string', description: 'string', required: false })
   village?: string;
 
   @IsOptional()
   @IsString({ message: 'Gender must be a string' })
+  @ApiProperty({ example: true, description: 'string', required: false })
   gender?: string;
 
   @IsOptional()
@@ -32,17 +41,29 @@ export class UpdateCustomerDto {
 
   @IsOptional()
   @IsString({ message: 'Image URL must be a string' })
+  @ApiProperty({
+    example: 'https://example.com/image.png',
+    description: 'Product image URL',
+    required: false,
+  })
   image?: string;
 
   @IsOptional()
   @IsString({ message: 'Remarks must be a string' })
+  @ApiProperty({ example: 'string', description: 'string', required: false })
   remarks: string;
 
   @IsOptional()
   @IsString({ message: 'Username must be a string' })
+  @ApiProperty({ example: 'string', description: 'string', required: false })
   username?: string;
 
   @IsOptional()
   @IsEmail({}, { message: 'Invalid email format' })
+  @ApiProperty({
+    example: 'string@yopmail.com',
+    description: 'string',
+    required: false,
+  })
   email?: string;
 }

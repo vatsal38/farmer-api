@@ -7,6 +7,7 @@ import {
   IsPhoneNumber,
 } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type ExpenseMasterDocument = ExpenseMaster & Document;
 
@@ -15,6 +16,10 @@ export class ExpenseMaster {
   @Prop({ required: true })
   @IsString({ message: 'Image URL must be a string' })
   @IsNotEmpty({ message: 'Image URL is required' })
+  @ApiProperty({
+    example: 'https://example.com/image.png',
+    description: 'Product image URL',
+  })
   image: string;
 
   @Prop({ unique: true })
@@ -23,6 +28,7 @@ export class ExpenseMaster {
   @Prop({ required: true })
   @IsString({ message: 'Name must be a string' })
   @IsNotEmpty({ message: 'Name is required' })
+  @ApiProperty({ example: 'string', description: 'string' })
   name: string;
 
   @Prop({ required: true, unique: true })
@@ -30,14 +36,15 @@ export class ExpenseMaster {
   @IsPhoneNumber('IN', {
     message: 'Phone number must be a valid Indian phone number',
   })
+  @ApiProperty({ example: 'string', description: '9999966666' })
   phone: string;
 
-  
   @Prop({ default: true })
   status: boolean;
 
   @Prop()
   @IsString({ message: 'Remarks must be a string' })
+  @ApiProperty({ example: 'string', description: 'string' })
   remarks: string;
 
   @Prop({ default: uuidv4 })

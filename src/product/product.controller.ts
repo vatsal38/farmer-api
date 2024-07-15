@@ -24,6 +24,7 @@ import { extname } from 'path';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiQuery,
   ApiTags,
@@ -63,6 +64,19 @@ export class ProductController {
     }),
   )
   @ApiOperation({ summary: 'Upload the CSV file' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'CSV file to upload',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   async uploadFile(@Req() req: any, @UploadedFile() file) {
     const userId = req.user.userId;
     if (!file) {

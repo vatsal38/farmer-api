@@ -8,6 +8,7 @@ import {
   IsEmail,
   Length,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type FarmerDocument = Farmer & Document;
 
@@ -19,6 +20,7 @@ export class Farmer {
   @Prop({ required: true })
   @IsString({ message: 'Name must be a string' })
   @IsNotEmpty({ message: 'Name is required' })
+  @ApiProperty({ example: 'string', description: 'string' })
   name: string;
 
   @Prop({ required: true, unique: true })
@@ -26,15 +28,18 @@ export class Farmer {
   @IsPhoneNumber('IN', {
     message: 'Phone number must be a valid Indian phone number',
   })
+  @ApiProperty({ example: '9999966666', description: '9999966666' })
   phone: string;
 
   @Prop({ required: true })
   @IsString({ message: 'Village must be a string' })
   @IsNotEmpty({ message: 'Village is required' })
+  @ApiProperty({ example: 'string', description: 'string' })
   village: string;
 
   @Prop({ required: true })
   @IsString({ message: 'Gender must be a string' })
+  @ApiProperty({ example: 'string', description: 'string' })
   gender: string;
 
   @Prop({ default: true })
@@ -43,16 +48,22 @@ export class Farmer {
   @Prop({ required: true, unique: true })
   @IsString({ message: 'Username must be a string' })
   @IsNotEmpty({ message: 'Username is required' })
+  @ApiProperty({ example: 'string', description: 'string' })
   username: string;
 
   @Prop({ required: true })
   @IsString({ message: 'Image URL must be a string' })
   @IsNotEmpty({ message: 'Image URL is required' })
+  @ApiProperty({
+    example: 'https://example.com/image.png',
+    description: 'Product image URL',
+  })
   image: string;
 
   @Prop({ required: true, unique: true })
   @IsString({ message: 'Email must be a string' })
   @IsEmail({}, { message: 'Invalid email format' })
+  @ApiProperty({ example: 'string@yopmail.com', description: 'string' })
   email: string;
 
   @Prop()
