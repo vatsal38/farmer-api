@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { IsNotEmpty, IsString, IsIn, IsBoolean } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type ProductDocument = Product & Document;
 
@@ -9,6 +10,10 @@ export class Product {
   @Prop({ required: true })
   @IsString({ message: 'Image must be a string' })
   @IsNotEmpty({ message: 'Image is required' })
+  @ApiProperty({
+    example: 'https://example.com/image.png',
+    description: 'Product image URL',
+  })
   image: string;
 
   @Prop({ unique: true })
@@ -17,6 +22,7 @@ export class Product {
   @Prop({ required: true })
   @IsString({ message: 'Product name must be a string' })
   @IsNotEmpty({ message: 'Product name is required' })
+  @ApiProperty({ example: 'Product Name', description: 'Product name' })
   productName: string;
 
   @Prop({ required: true })
@@ -25,6 +31,7 @@ export class Product {
   //   message: 'Type must be either "active" or "inactive"',
   // })
   // enum: ['active', 'inactive']
+  @ApiProperty({ example: 'active', description: 'Product type' })
   type: string;
 
   @Prop({ default: true })

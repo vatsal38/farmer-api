@@ -21,7 +21,15 @@ import { UpdateProductDto } from './update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+@ApiTags('Products')
+@ApiBearerAuth()
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -54,6 +62,7 @@ export class ProductController {
       },
     }),
   )
+  @ApiOperation({ summary: 'Upload the CSV file' })
   async uploadFile(@Req() req: any, @UploadedFile() file) {
     const userId = req.user.userId;
     if (!file) {
@@ -64,6 +73,8 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
+  @ApiOperation({ summary: 'Create a new product' })
+  @ApiBody({ type: Product })
   async create(@Req() req: any, @Body() product: Product) {
     const userId = req.user.userId;
     await this.productService.create(product, userId);
@@ -72,6 +83,9 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
+  @ApiOperation({ summary: 'Get all products' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
   async findAll(
     @Req() req: any,
     @Query('page') page?: number,
@@ -84,6 +98,7 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
+  @ApiOperation({ summary: 'Get a single product by id' })
   async findOne(@Req() req: any, @Param('id') id: string) {
     const userId = req.user.userId;
     return this.productService.findOne(id, userId);
@@ -91,6 +106,7 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a product' })
   async update(
     @Req() req: any,
     @Param('id') id: string,
@@ -103,6 +119,7 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a product' })
   async remove(@Param('id') id: string) {
     await this.productService.remove(id);
     return {

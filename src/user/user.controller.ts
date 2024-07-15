@@ -2,12 +2,14 @@ import { Controller, Post, Body, Request, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { CreateUserDto } from './create-user.dto';
-
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+@ApiTags('Auth and User')
 @Controller('auth')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('signup')
+  @ApiOperation({ summary: 'Sign up a new user and send OTP' })
   async signup(@Body() createUserDto: CreateUserDto) {
     const { username, password, email, firstName, lastName } = createUserDto;
     await this.userService.sendOTP(
@@ -21,6 +23,16 @@ export class UserController {
   }
 
   @Post('verify-otp')
+  @ApiOperation({ summary: 'Verify OTP for user' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        username: { type: 'string' },
+        otp: { type: 'string' },
+      },
+    },
+  })
   async verifyOtp(
     @Body()
     body: {
@@ -38,11 +50,30 @@ export class UserController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @ApiOperation({ summary: 'Log in user' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        username: { type: 'string' },
+        password: { type: 'string' },
+      },
+    },
+  })
   async login(@Body() data: any) {
     return await this.userService.login(data);
   }
 
   @Post('forgot-password')
+  @ApiOperation({ summary: 'Send password reset OTP' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string' },
+      },
+    },
+  })
   async forgotPassword(
     @Body()
     body: {
@@ -55,6 +86,17 @@ export class UserController {
   }
 
   @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password with OTP' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string' },
+        otp: { type: 'string' },
+        newPassword: { type: 'string' },
+      },
+    },
+  })
   async resetPassword(
     @Body()
     body: {
