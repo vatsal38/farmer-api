@@ -1,3 +1,4 @@
+import { FirebaseService } from './../common/firebase.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductService } from './product.service';
@@ -10,6 +11,6 @@ import { ProductRepository } from './product.repository';
     MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
   ],
   controllers: [ProductController],
-  providers: [ProductService, ProductRepository],
+  providers: [ProductService, ProductRepository, FirebaseService],
 })
 export class ProductModule {}

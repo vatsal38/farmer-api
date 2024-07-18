@@ -1,3 +1,4 @@
+import { FirebaseService } from './../common/firebase.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FarmerService } from './farmer.service';
@@ -10,6 +11,6 @@ import { FarmerRepository } from './farmer.repository';
     MongooseModule.forFeature([{ name: Farmer.name, schema: FarmerSchema }]),
   ],
   controllers: [FarmerController],
-  providers: [FarmerService, FarmerRepository],
+  providers: [FarmerService, FarmerRepository, FirebaseService],
 })
 export class FarmerModule {}
