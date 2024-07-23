@@ -1,4 +1,3 @@
-import { FirebaseService } from './../common/firebase.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ExpenseMasterService } from './expense-master.service';
@@ -13,6 +12,6 @@ import { ExpenseMasterRepository } from './expense-master.repository';
     ]),
   ],
   controllers: [ExpenseMasterController],
-  providers: [ExpenseMasterService, ExpenseMasterRepository, FirebaseService],
+  providers: [ExpenseMasterService, ExpenseMasterRepository],
 })
 export class ExpenseMasterModule {}

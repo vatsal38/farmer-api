@@ -1,4 +1,3 @@
-import { FirebaseService } from './../common/firebase.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CustomerService } from './customer.service';
@@ -13,6 +12,6 @@ import { CustomerRepository } from './customer.repository';
     ]),
   ],
   controllers: [CustomerController],
-  providers: [CustomerService, CustomerRepository, FirebaseService],
+  providers: [CustomerService, CustomerRepository],
 })
 export class CustomerModule {}

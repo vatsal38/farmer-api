@@ -1,4 +1,3 @@
-import { FirebaseService } from './../common/firebase.service';
 import {
   Controller,
   Get,
@@ -34,10 +33,7 @@ import {
 @ApiBearerAuth()
 @Controller('products')
 export class ProductController {
-  constructor(
-    private readonly productService: ProductService,
-    private readonly firebaseService: FirebaseService,
-  ) {}
+  constructor(private readonly productService: ProductService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post('upload')
@@ -92,26 +88,10 @@ export class ProductController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create a new product' })
-  @UseInterceptors(FileInterceptor('image'))
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Product data',
-    schema: {
-      type: 'object',
-      properties: {
-        productName: { type: 'string' },
-        type: { type: 'string' },
-        image: { type: 'string', format: 'binary' },
-      },
-    },
-  })
-  async create(@Req() req: any, @Body() body: any, @UploadedFile() image: any) {
+  @ApiBody({ type: Product })
+  async create(@Req() req: any, @Body() product: Product) {
     const userId = req.user.userId;
-    if (image) {
-      const imageUrl = await this.firebaseService.uploadFile(image);
-      body.image = imageUrl;
-    }
-    await this.productService.create(body, userId);
+    await this.productService.create(product, userId);
     return { message: 'Product created successfully!' };
   }
 
@@ -141,32 +121,12 @@ export class ProductController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a product' })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Update a product',
-    schema: {
-      type: 'object',
-      properties: {
-        image: {
-          type: 'string',
-          format: 'binary',
-        },
-        productName: { type: 'string' },
-        type: { type: 'string' },
-      },
-    },
-  })
   async update(
     @Req() req: any,
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-    @UploadedFile() image: any,
   ) {
     const userId = req.user.userId;
-    if (image) {
-      const imageUrl = await this.firebaseService.uploadFile(image);
-      updateProductDto.image = imageUrl;
-    }
     await this.productService.update(id, updateProductDto, userId);
     return { message: 'Product updated successfully!' };
   }

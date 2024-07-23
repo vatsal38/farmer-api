@@ -1,4 +1,3 @@
-import { FirebaseService } from './../common/firebase.service';
 import {
   Controller,
   Get,
@@ -10,8 +9,6 @@ import {
   UseGuards,
   Query,
   Req,
-  UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import { FarmerService } from './farmer.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -20,52 +17,22 @@ import { UpdateFarmerDto } from './update-farmer.dto';
 import {
   ApiBearerAuth,
   ApiBody,
-  ApiConsumes,
   ApiOperation,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
 @ApiTags('Farmers')
 @ApiBearerAuth()
 @Controller('farmers')
 export class FarmerController {
-  constructor(
-    private readonly farmerService: FarmerService,
-    private readonly firebaseService: FirebaseService,
-  ) {}
+  constructor(private readonly farmerService: FarmerService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create a new farmer' })
-  @UseInterceptors(FileInterceptor('image'))
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Product data',
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        phone: { type: 'string' },
-        village: { type: 'string' },
-        gender: { type: 'string' },
-        status: { type: 'string' },
-        username: { type: 'string' },
-        email: { type: 'string' },
-        image: { type: 'string', format: 'binary' },
-      },
-    },
-  })
-  async create(
-    @Req() req: any,
-    @Body() farmer: Farmer,
-    @UploadedFile() image: any,
-  ) {
+  @ApiBody({ type: Farmer })
+  async create(@Req() req: any, @Body() farmer: Farmer) {
     const userId = req.user.userId;
-    if (image) {
-      const imageUrl = await this.firebaseService.uploadFile(image);
-      farmer.image = imageUrl;
-    }
     await this.farmerService.create(farmer, userId);
     return { message: 'Farmer created successfully!' };
   }
