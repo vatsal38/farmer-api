@@ -3,7 +3,11 @@ import { AppModule } from './app.module';
 import { ValidationExceptionFilter } from './common/validation-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as dotenv from 'dotenv';
 
+dotenv.config();
+console.log('MONGO_URI:', process.env.MONGO_URI); // Log to check if it's loaded
+console.log('SMTP_HOST:', process.env.SMTP_HOST);
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
@@ -29,7 +33,6 @@ async function bootstrap() {
   );
   app.enableCors();
   app.useGlobalFilters(new ValidationExceptionFilter());
-
   await app.listen(5000);
 }
 bootstrap();

@@ -9,38 +9,68 @@ import { ProductModule } from './product/product.module';
 import { FarmerModule } from './farmer/farmer.module';
 import { CustomerModule } from './customer/customer.module';
 import { ExpenseMasterModule } from './expense-master/expense-master.module';
-
+import { UploadController } from './upload-image/upload.controller';
+import { HttpModule } from '@nestjs/axios';
+import { FirebaseService } from './common/firebase.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+const ENV: string = process.env.NODE_ENV;
+console.log(ENV);
 @Module({
   imports: [
-    MailerModule.forRoot({
-      transport: {
-        host: 'smtp.gmail.com',
-        port: 587,
-        auth: {
-          user: 'vatsal9999.vm@gmail.com',
-          pass: 'qnrn bmat rixw mypt',
-        },
-      },
-      defaults: {
-        from: '"No Reply" <no-reply@example.com>',
-      },
-      template: {
-        dir: join(__dirname, '..', 'templates'),
-        adapter: new HandlebarsAdapter(),
-        options: {
-          strict: false,
-        },
-      },
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [ENV === 'production' ? '.env.prod' : `.env`],
+      expandVariables: true,
     }),
-    MongooseModule.forRoot(
-      'mongodb+srv://farmer-nest:123456Farmer@atlascluster.8nmj5fd.mongodb.net/farmer?retryWrites=true&w=majority&appName=AtlasCluster',
-    ),
+    ConfigModule,
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          transport: {
+            host: configService.get<string>('MAIL_HOST'),
+            port: configService.get<number>('MAIL_PORT'),
+            auth: {
+              user: configService.get<string>('MAIL_USER'),
+              pass: configService.get<string>('MAIL_PASS'),
+            },
+          },
+          defaults: {
+            from: configService.get<string>('MAIL_FROM'),
+          },
+          template: {
+            dir: join(__dirname, '..', 'templates'),
+            adapter: new HandlebarsAdapter(),
+            options: {
+              strict: false,
+            },
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const mongoURI = configService.get('MONGO_URI');
+        const database = configService.get('DB_MONGO_DATABASE');
+
+        return {
+          uri: mongoURI,
+          dbName: database,
+        };
+      },
+      inject: [ConfigService],
+    }),
     AuthModule,
     UserModule,
     ProductModule,
     FarmerModule,
     CustomerModule,
     ExpenseMasterModule,
+    HttpModule,
   ],
+  controllers: [UploadController],
+  providers: [FirebaseService],
 })
 export class AppModule {}
