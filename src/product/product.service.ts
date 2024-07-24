@@ -13,15 +13,15 @@ import { generateRandomCode } from '../utils/functions';
 @Injectable()
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
-  private lastSequenceNumber: any = 0;
   async importProductsFromCsv(filePath: string, userId: string): Promise<any> {
     const products = [];
+    const codePrefix = 'VEG';
     return new Promise((resolve, reject) => {
       fs.createReadStream(filePath)
         .pipe(
           csvParser({
             separator: ';',
-            headers: ['productName', 'type', 'image'],
+            headers: ['productName', 'code', 'type', 'image'],
           }),
         )
         .on('data', (row) => {
@@ -31,17 +31,22 @@ export class ProductService {
           try {
             for (const product of products) {
               const highestCodeProduct =
-                await this.productRepository.highestCodeProduct();
-              let currentCode = highestCodeProduct
-                ? parseInt(highestCodeProduct.code) + 1
-                : 1;
+                await this.productRepository.highestCodeProduct(codePrefix);
+              let currentCode = 1;
+              if (highestCodeProduct) {
+                const highestCode = highestCodeProduct.code.replace(
+                  codePrefix,
+                  '',
+                );
+                currentCode = parseInt(highestCode, 10) + 1;
+              }
               if (!product.productName || !product.type || !product.image) {
                 throw new BadRequestException('Missing required fields');
               }
               await this.productRepository.create(
                 {
                   productName: product.productName,
-                  code: currentCode.toString().padStart(6, '0'),
+                  code: `${codePrefix}${currentCode.toString().padStart(3, '0')}`,
                   type: product.type,
                   image: product.image,
                   status: true,

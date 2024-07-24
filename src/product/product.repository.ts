@@ -73,7 +73,11 @@ export class ProductRepository {
     }
   }
 
-  async highestCodeProduct() {
-    return this.productModel.findOne().sort({ code: -1 }).select('code').exec();
+  async highestCodeProduct(codePrefix: any) {
+    return this.productModel
+      .findOne({ code: { $regex: `^${codePrefix}` } })
+      .sort({ code: -1 })
+      .select('code')
+      .exec();
   }
 }
