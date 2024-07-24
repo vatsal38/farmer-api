@@ -14,8 +14,8 @@ import { generateRandomCode } from '../utils/functions';
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
   async importProductsFromCsv(filePath: string, userId: string): Promise<any> {
-    const products = [];
     const codePrefix = 'VEG';
+    const products = [];
     return new Promise((resolve, reject) => {
       fs.createReadStream(filePath)
         .pipe(
@@ -87,7 +87,15 @@ export class ProductService {
       // if (existingProduct) {
       //   throw new ConflictException('Product with this name already exists');
       // }
-      product.code = this.generateCode();
+      const codePrefix = 'VEG';
+      const highestCodeProduct =
+        await this.productRepository.highestCodeProduct(codePrefix);
+      let currentCode = 1;
+      if (highestCodeProduct) {
+        const highestCode = highestCodeProduct.code.replace(codePrefix, '');
+        currentCode = parseInt(highestCode, 10) + 1;
+      }
+      product.code = `${codePrefix}${currentCode.toString().padStart(3, '0')}`;
       return await this.productRepository.create(product, userId);
     } catch (error) {
       if (
