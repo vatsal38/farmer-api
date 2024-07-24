@@ -9,7 +9,7 @@ import { ProductRepository } from './product.repository';
 import { Product } from './product.schema';
 import * as csvParser from 'csv-parser';
 import * as fs from 'fs';
-
+import { generateRandomCode } from '../utils/functions';
 @Injectable()
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
@@ -30,18 +30,14 @@ export class ProductService {
         .on('end', async () => {
           try {
             for (const product of products) {
-              if (
-                !product.productName ||
-                !product.code ||
-                !product.type ||
-                !product.image
-              ) {
+              if (!product.productName || !product.type || !product.image) {
                 throw new BadRequestException('Missing required fields');
               }
+              const randomCode = generateRandomCode(6);
               await this.productRepository.create(
                 {
                   productName: product.productName,
-                  code: product.code,
+                  code: randomCode,
                   type: product.type,
                   image: product.image,
                   status: true,
