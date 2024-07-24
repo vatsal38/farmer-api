@@ -191,6 +191,7 @@ export class UserService {
       return {
         message: 'You are not verified we sent you otp on mail, verify first',
         isVerified: userData.isVerified,
+        username: userData.username,
       };
     }
   }

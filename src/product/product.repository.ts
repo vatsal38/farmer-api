@@ -72,4 +72,8 @@ export class ProductRepository {
       return this.productModel.countDocuments({ createdBy: userId }).exec();
     }
   }
+
+  async highestCodeProduct() {
+    return this.productModel.findOne().sort({ code: -1 }).select('code').exec();
+  }
 }
