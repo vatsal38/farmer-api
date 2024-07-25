@@ -19,9 +19,8 @@ export class FarmerRepository {
     isSuperAdmin?: boolean,
   ): Promise<Farmer[]> {
     const query = this.createSearchQuery(search);
-
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.farmerModel.find(query).exec();
   }
@@ -55,7 +54,7 @@ export class FarmerRepository {
   ): Promise<Farmer[]> {
     const query = this.createSearchQuery(search);
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.farmerModel.find(query).skip(skip).limit(limit).exec();
   }
@@ -68,7 +67,7 @@ export class FarmerRepository {
     const query = this.createSearchQuery(search);
 
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.farmerModel.countDocuments(query).exec();
   }

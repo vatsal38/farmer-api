@@ -20,7 +20,7 @@ export class CustomerRepository {
   ): Promise<Customer[]> {
     const query = this.createSearchQuery(search);
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.customerModel.find(query).exec();
   }
@@ -56,7 +56,7 @@ export class CustomerRepository {
   ): Promise<Customer[]> {
     const query = this.createSearchQuery(search);
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.customerModel.find(query).skip(skip).limit(limit).exec();
   }
@@ -68,7 +68,7 @@ export class CustomerRepository {
   ): Promise<number> {
     const query = this.createSearchQuery(search);
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.customerModel.countDocuments(query).exec();
   }

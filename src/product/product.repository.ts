@@ -22,7 +22,7 @@ export class ProductRepository {
     const query = this.createSearchQuery(search);
 
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.productModel.find(query).exec();
   }
@@ -62,7 +62,7 @@ export class ProductRepository {
   ): Promise<Product[]> {
     const query = this.createSearchQuery(search);
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.productModel.find(query).skip(skip).limit(limit).exec();
   }
@@ -74,7 +74,7 @@ export class ProductRepository {
   ): Promise<number> {
     const query = this.createSearchQuery(search);
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.productModel.countDocuments(query).exec();
   }

@@ -6,8 +6,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
-console.log('MONGO_URI:', process.env.MONGO_URI); // Log to check if it's loaded
-console.log('SMTP_HOST:', process.env.SMTP_HOST);
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()

@@ -14,7 +14,6 @@ import { HttpModule } from '@nestjs/axios';
 import { FirebaseService } from './common/firebase.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 const ENV: string = process.env.NODE_ENV;
-console.log(ENV);
 @Module({
   imports: [
     ConfigModule.forRoot({

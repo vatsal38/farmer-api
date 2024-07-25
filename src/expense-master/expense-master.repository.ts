@@ -24,7 +24,7 @@ export class ExpenseMasterRepository {
   ): Promise<ExpenseMaster[]> {
     const query = this.createSearchQuery(search);
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.expenseMasterModel.find(query).exec();
   }
@@ -64,7 +64,7 @@ export class ExpenseMasterRepository {
   ): Promise<ExpenseMaster[]> {
     const query = this.createSearchQuery(search);
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.expenseMasterModel.find(query).skip(skip).limit(limit).exec();
   }
@@ -76,7 +76,7 @@ export class ExpenseMasterRepository {
   ): Promise<number> {
     const query = this.createSearchQuery(search);
     if (!isSuperAdmin) {
-      query.user = userId;
+      query.createdBy = userId;
     }
     return this.expenseMasterModel.countDocuments(query).exec();
   }
