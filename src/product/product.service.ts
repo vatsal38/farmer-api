@@ -74,10 +74,6 @@ export class ProductService {
     });
   }
 
-  private generateCode(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  }
-
   async create(product: Product, userId: string): Promise<Product> {
     try {
       // const existingProduct = await this.productRepository.findByProductName(
@@ -113,6 +109,7 @@ export class ProductService {
     userId: string,
     page?: number,
     limit?: number,
+    search?: string,
     isSuperAdmin?: boolean,
   ) {
     if (page && limit) {
@@ -122,9 +119,10 @@ export class ProductService {
           skip,
           limit,
           userId,
+          search,
           isSuperAdmin,
         ),
-        this.productRepository.countAll(userId, isSuperAdmin),
+        this.productRepository.countAll(userId, search, isSuperAdmin),
       ]);
       const totalPages = Math.ceil(totalRecords / limit);
       return {
@@ -135,7 +133,11 @@ export class ProductService {
         totalPages,
       };
     } else {
-      const items = await this.productRepository.findAll(userId, isSuperAdmin);
+      const items = await this.productRepository.findAll(
+        userId,
+        search,
+        isSuperAdmin,
+      );
       return items;
     }
   }

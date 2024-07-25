@@ -13,12 +13,17 @@ export class FarmerRepository {
     return newFarmer.save();
   }
 
-  async findAll(userId: string, isSuperAdmin: boolean): Promise<Farmer[]> {
-    if (isSuperAdmin) {
-      return this.farmerModel.find().exec();
-    } else {
-      return this.farmerModel.find({ createdBy: userId }).exec();
+  async findAll(
+    userId: string,
+    search?: string,
+    isSuperAdmin?: boolean,
+  ): Promise<Farmer[]> {
+    const query = this.createSearchQuery(search);
+
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.farmerModel.find(query).exec();
   }
 
   async findOne(id: string): Promise<Farmer> {
@@ -45,24 +50,54 @@ export class FarmerRepository {
     skip: number,
     limit: number,
     userId: string,
-    isSuperAdmin: boolean,
+    search?: string,
+    isSuperAdmin?: boolean,
   ): Promise<Farmer[]> {
-    if (isSuperAdmin) {
-      return this.farmerModel.find().skip(skip).limit(limit).exec();
-    } else {
-      return this.farmerModel
-        .find({ createdBy: userId })
-        .skip(skip)
-        .limit(limit)
-        .exec();
+    const query = this.createSearchQuery(search);
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.farmerModel.find(query).skip(skip).limit(limit).exec();
   }
 
-  async countAll(userId: string, isSuperAdmin: boolean): Promise<number> {
-    if (isSuperAdmin) {
-      return this.farmerModel.countDocuments().exec();
-    } else {
-      return this.farmerModel.countDocuments({ createdBy: userId }).exec();
+  async countAll(
+    userId: string,
+    search?: string,
+    isSuperAdmin?: boolean,
+  ): Promise<number> {
+    const query = this.createSearchQuery(search);
+
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.farmerModel.countDocuments(query).exec();
+  }
+
+  async highestCodeFarmer(codePrefix: any) {
+    return this.farmerModel
+      .findOne({ code: { $regex: `^${codePrefix}` } })
+      .sort({ code: -1 })
+      .select('code')
+      .exec();
+  }
+
+  private createSearchQuery(search: string): any {
+    if (!search) {
+      return {};
+    }
+    const fieldsToSearch = [
+      'code',
+      'name',
+      'email',
+      'phone',
+      'village',
+      'username',
+      'gender',
+    ];
+    return {
+      $or: fieldsToSearch.map((field) => ({
+        [field]: { $regex: search, $options: 'i' },
+      })),
+    };
   }
 }

@@ -109,4 +109,25 @@ export class UserController {
     await this.userService.resetPassword(email, otp, newPassword);
     return { message: 'Password reset successfully' };
   }
+
+  @Post('resend-otp')
+  @ApiOperation({ summary: 'Resend OTP to user' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string' },
+      },
+    },
+  })
+  async resendOtp(
+    @Body()
+    body: {
+      email: string;
+    },
+  ) {
+    const { email } = body;
+    await this.userService.resendOTP(email);
+    return { message: 'OTP resent to your email' };
+  }
 }

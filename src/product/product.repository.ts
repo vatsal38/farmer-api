@@ -14,12 +14,17 @@ export class ProductRepository {
     return newProduct.save();
   }
 
-  async findAll(userId: string, isSuperAdmin?: boolean): Promise<Product[]> {
-    if (isSuperAdmin) {
-      return this.productModel.find().exec();
-    } else {
-      return this.productModel.find({ createdBy: userId }).exec();
+  async findAll(
+    userId: string,
+    search?: string,
+    isSuperAdmin?: boolean,
+  ): Promise<Product[]> {
+    const query = this.createSearchQuery(search);
+
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.productModel.find(query).exec();
   }
 
   async findOne(id: string): Promise<Product> {
@@ -52,25 +57,26 @@ export class ProductRepository {
     skip: number,
     limit: number,
     userId: string,
+    search?: string,
     isSuperAdmin?: boolean,
   ): Promise<Product[]> {
-    if (isSuperAdmin) {
-      return this.productModel.find().skip(skip).limit(limit).exec();
-    } else {
-      return this.productModel
-        .find({ createdBy: userId })
-        .skip(skip)
-        .limit(limit)
-        .exec();
+    const query = this.createSearchQuery(search);
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.productModel.find(query).skip(skip).limit(limit).exec();
   }
 
-  async countAll(userId: string, isSuperAdmin?: boolean): Promise<number> {
-    if (isSuperAdmin) {
-      return this.productModel.countDocuments().exec();
-    } else {
-      return this.productModel.countDocuments({ createdBy: userId }).exec();
+  async countAll(
+    userId: string,
+    search: string,
+    isSuperAdmin?: boolean,
+  ): Promise<number> {
+    const query = this.createSearchQuery(search);
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.productModel.countDocuments(query).exec();
   }
 
   async highestCodeProduct(codePrefix: any) {
@@ -79,5 +85,17 @@ export class ProductRepository {
       .sort({ code: -1 })
       .select('code')
       .exec();
+  }
+
+  private createSearchQuery(search: string): any {
+    if (!search) {
+      return {};
+    }
+    const fieldsToSearch = ['productName', 'code', 'type'];
+    return {
+      $or: fieldsToSearch.map((field) => ({
+        [field]: { $regex: search, $options: 'i' },
+      })),
+    };
   }
 }

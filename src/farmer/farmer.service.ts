@@ -11,10 +11,6 @@ import { Farmer } from './farmer.schema';
 export class FarmerService {
   constructor(private readonly farmerRepository: FarmerRepository) {}
 
-  private generateCode(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  }
-
   async create(farmer: Farmer, userId: string): Promise<Farmer> {
     try {
       // const existingFarmerByPhone = await this.farmerRepository.findByPhone(
@@ -29,7 +25,15 @@ export class FarmerService {
       //   throw new ConflictException('Farmer is already exists');
       // }
 
-      farmer.code = this.generateCode();
+      const codePrefix = 'FAR';
+      const highestCodeFarmer =
+        await this.farmerRepository.highestCodeFarmer(codePrefix);
+      let currentCode = 1;
+      if (highestCodeFarmer) {
+        const highestCode = highestCodeFarmer.code.replace(codePrefix, '');
+        currentCode = parseInt(highestCode, 10) + 1;
+      }
+      farmer.code = `${codePrefix}${currentCode.toString().padStart(3, '0')}`;
       return await this.farmerRepository.create(farmer, userId);
     } catch (error) {
       if (error.keyPattern && error.keyPattern.phone) {
@@ -56,6 +60,7 @@ export class FarmerService {
     userId: string,
     page?: number,
     limit?: number,
+    search?: string,
     isSuperAdmin?: boolean,
   ) {
     if (page && limit) {
@@ -65,9 +70,10 @@ export class FarmerService {
           skip,
           limit,
           userId,
+          search,
           isSuperAdmin,
         ),
-        this.farmerRepository.countAll(userId, isSuperAdmin),
+        this.farmerRepository.countAll(userId, search, isSuperAdmin),
       ]);
       const totalPages = Math.ceil(totalRecords / limit);
       return {
@@ -78,7 +84,11 @@ export class FarmerService {
         totalPages,
       };
     } else {
-      const items = await this.farmerRepository.findAll(userId, isSuperAdmin);
+      const items = await this.farmerRepository.findAll(
+        userId,
+        search,
+        isSuperAdmin,
+      );
       return items;
     }
   }

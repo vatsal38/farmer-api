@@ -13,12 +13,16 @@ export class CustomerRepository {
     return newCustomer.save();
   }
 
-  async findAll(userId: string, isSuperAdmin: boolean): Promise<Customer[]> {
-    if (isSuperAdmin) {
-      return this.customerModel.find().exec();
-    } else {
-      return this.customerModel.find({ createdBy: userId }).exec();
+  async findAll(
+    userId: string,
+    search?: string,
+    isSuperAdmin?: boolean,
+  ): Promise<Customer[]> {
+    const query = this.createSearchQuery(search);
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.customerModel.find(query).exec();
   }
 
   async findOne(id: string): Promise<Customer> {
@@ -47,24 +51,54 @@ export class CustomerRepository {
     skip: number,
     limit: number,
     userId: string,
-    isSuperAdmin: boolean,
+    search?: string,
+    isSuperAdmin?: boolean,
   ): Promise<Customer[]> {
-    if (isSuperAdmin) {
-      return this.customerModel.find().skip(skip).limit(limit).exec();
-    } else {
-      return this.customerModel
-        .find({ createdBy: userId })
-        .skip(skip)
-        .limit(limit)
-        .exec();
+    const query = this.createSearchQuery(search);
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.customerModel.find(query).skip(skip).limit(limit).exec();
   }
 
-  async countAll(userId: string, isSuperAdmin: boolean): Promise<number> {
-    if (isSuperAdmin) {
-      return this.customerModel.countDocuments().exec();
-    } else {
-      return this.customerModel.countDocuments({ createdBy: userId }).exec();
+  async countAll(
+    userId: string,
+    search?: string,
+    isSuperAdmin?: boolean,
+  ): Promise<number> {
+    const query = this.createSearchQuery(search);
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.customerModel.countDocuments(query).exec();
+  }
+
+  async highestCodeCustomer(codePrefix: any) {
+    return this.customerModel
+      .findOne({ code: { $regex: `^${codePrefix}` } })
+      .sort({ code: -1 })
+      .select('code')
+      .exec();
+  }
+
+  private createSearchQuery(search: string): any {
+    if (!search) {
+      return {};
+    }
+    const fieldsToSearch = [
+      'code',
+      'name',
+      'email',
+      'phone',
+      'village',
+      'username',
+      'gender',
+      'remarks',
+    ];
+    return {
+      $or: fieldsToSearch.map((field) => ({
+        [field]: { $regex: search, $options: 'i' },
+      })),
+    };
   }
 }

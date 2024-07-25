@@ -195,4 +195,26 @@ export class UserService {
       };
     }
   }
+
+  async resendOTP(email: string): Promise<void> {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    const otpExpiration = new Date();
+    otpExpiration.setMinutes(otpExpiration.getMinutes() + 10);
+
+    await this.userRepository.update(user.username, otp, otpExpiration);
+
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Your new OTP Code',
+      template: './otp',
+      context: {
+        otp,
+      },
+    });
+  }
 }

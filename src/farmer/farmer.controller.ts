@@ -42,14 +42,22 @@ export class FarmerController {
   @ApiOperation({ summary: 'Get all farmers' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'search', required: false, type: String })
   async findAll(
     @Req() req: any,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
+    @Query('search') search?: string,
   ) {
     const isSuperAdmin = req.user.role === 'superadmin';
     const userId = req.user.userId;
-    return this.farmerService.findAll(userId, page, limit, isSuperAdmin);
+    return this.farmerService.findAll(
+      userId,
+      page,
+      limit,
+      search,
+      isSuperAdmin,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

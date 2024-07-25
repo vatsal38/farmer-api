@@ -19,13 +19,14 @@ export class ExpenseMasterRepository {
 
   async findAll(
     userId: string,
-    isSuperAdmin: boolean,
+    search?: string,
+    isSuperAdmin?: boolean,
   ): Promise<ExpenseMaster[]> {
-    if (isSuperAdmin) {
-      return this.expenseMasterModel.find().exec();
-    } else {
-      return this.expenseMasterModel.find({ createdBy: userId }).exec();
+    const query = this.createSearchQuery(search);
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.expenseMasterModel.find(query).exec();
   }
 
   async findOne(id: string): Promise<ExpenseMaster> {
@@ -58,26 +59,45 @@ export class ExpenseMasterRepository {
     skip: number,
     limit: number,
     userId: string,
-    isSuperAdmin: boolean,
+    search?: string,
+    isSuperAdmin?: boolean,
   ): Promise<ExpenseMaster[]> {
-    if (isSuperAdmin) {
-      return this.expenseMasterModel.find().skip(skip).limit(limit).exec();
-    } else {
-      return this.expenseMasterModel
-        .find({ createdBy: userId })
-        .skip(skip)
-        .limit(limit)
-        .exec();
+    const query = this.createSearchQuery(search);
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.expenseMasterModel.find(query).skip(skip).limit(limit).exec();
   }
 
-  async countAll(userId: string, isSuperAdmin: boolean): Promise<number> {
-    if (isSuperAdmin) {
-      return this.expenseMasterModel.countDocuments().exec();
-    } else {
-      return this.expenseMasterModel
-        .countDocuments({ createdBy: userId })
-        .exec();
+  async countAll(
+    userId: string,
+    search?: string,
+    isSuperAdmin?: boolean,
+  ): Promise<number> {
+    const query = this.createSearchQuery(search);
+    if (!isSuperAdmin) {
+      query.user = userId;
     }
+    return this.expenseMasterModel.countDocuments(query).exec();
+  }
+
+  async highestCodeExpenseMaster(codePrefix: any) {
+    return this.expenseMasterModel
+      .findOne({ code: { $regex: `^${codePrefix}` } })
+      .sort({ code: -1 })
+      .select('code')
+      .exec();
+  }
+
+  private createSearchQuery(search: string): any {
+    if (!search) {
+      return {};
+    }
+    const fieldsToSearch = ['name', 'code', 'phone', 'remarks', 'unique_id'];
+    return {
+      $or: fieldsToSearch.map((field) => ({
+        [field]: { $regex: search, $options: 'i' },
+      })),
+    };
   }
 }

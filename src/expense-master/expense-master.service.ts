@@ -13,10 +13,6 @@ export class ExpenseMasterService {
     private readonly expenseMasterRepository: ExpenseMasterRepository,
   ) {}
 
-  private generateCode(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  }
-
   async create(
     expenseMaster: ExpenseMaster,
     userId: string,
@@ -31,7 +27,18 @@ export class ExpenseMasterService {
       // if (existingExpenseMasterByPhone) {
       //   throw new ConflictException('ExpenseMaster is already exists');
       // }
-      expenseMaster.code = this.generateCode();
+      const codePrefix = 'EXP';
+      const highestCodeExpenseMaster =
+        await this.expenseMasterRepository.highestCodeExpenseMaster(codePrefix);
+      let currentCode = 1;
+      if (highestCodeExpenseMaster) {
+        const highestCode = highestCodeExpenseMaster.code.replace(
+          codePrefix,
+          '',
+        );
+        currentCode = parseInt(highestCode, 10) + 1;
+      }
+      expenseMaster.code = `${codePrefix}${currentCode.toString().padStart(3, '0')}`;
       return await this.expenseMasterRepository.create(expenseMaster, userId);
     } catch (error) {
       if (error.keyPattern && error.keyPattern.phone) {
@@ -54,6 +61,7 @@ export class ExpenseMasterService {
     userId: string,
     page?: number,
     limit?: number,
+    search?: string,
     isSuperAdmin?: boolean,
   ) {
     if (page && limit) {
@@ -63,9 +71,10 @@ export class ExpenseMasterService {
           skip,
           limit,
           userId,
+          search,
           isSuperAdmin,
         ),
-        this.expenseMasterRepository.countAll(userId, isSuperAdmin),
+        this.expenseMasterRepository.countAll(userId, search, isSuperAdmin),
       ]);
       const totalPages = Math.ceil(totalRecords / limit);
       return {
@@ -78,6 +87,7 @@ export class ExpenseMasterService {
     } else {
       const items = await this.expenseMasterRepository.findAll(
         userId,
+        search,
         isSuperAdmin,
       );
       return items;

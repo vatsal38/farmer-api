@@ -11,10 +11,6 @@ import { Customer } from './customer.schema';
 export class CustomerService {
   constructor(private readonly customerRepository: CustomerRepository) {}
 
-  private generateCode(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  }
-
   async create(customer: Customer, userId: string): Promise<Customer> {
     try {
       // const existingCustomerByPhone = await this.customerRepository.findByPhone(
@@ -28,8 +24,15 @@ export class CustomerService {
       // if (existingCustomerByPhone || existingCustomerByEmail) {
       //   throw new ConflictException('Customer is already exists');
       // }
-
-      customer.code = this.generateCode();
+      const codePrefix = 'CUS';
+      const highestCodeCustomer =
+        await this.customerRepository.highestCodeCustomer(codePrefix);
+      let currentCode = 1;
+      if (highestCodeCustomer) {
+        const highestCode = highestCodeCustomer.code.replace(codePrefix, '');
+        currentCode = parseInt(highestCode, 10) + 1;
+      }
+      customer.code = `${codePrefix}${currentCode.toString().padStart(3, '0')}`;
       return await this.customerRepository.create(customer, userId);
     } catch (error) {
       if (error.keyPattern && error.keyPattern.phone) {
@@ -56,6 +59,7 @@ export class CustomerService {
     userId: string,
     page?: number,
     limit?: number,
+    search?: string,
     isSuperAdmin?: boolean,
   ) {
     if (page && limit) {
@@ -65,9 +69,10 @@ export class CustomerService {
           skip,
           limit,
           userId,
+          search,
           isSuperAdmin,
         ),
-        this.customerRepository.countAll(userId, isSuperAdmin),
+        this.customerRepository.countAll(userId, search, isSuperAdmin),
       ]);
       const totalPages = Math.ceil(totalRecords / limit);
       return {
@@ -78,7 +83,11 @@ export class CustomerService {
         totalPages,
       };
     } else {
-      const items = await this.customerRepository.findAll(userId, isSuperAdmin);
+      const items = await this.customerRepository.findAll(
+        userId,
+        search,
+        isSuperAdmin,
+      );
       return items;
     }
   }
