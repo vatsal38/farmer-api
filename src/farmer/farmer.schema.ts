@@ -62,7 +62,6 @@ export class Farmer {
 
   @Prop({ required: true, unique: true })
   @IsString({ message: 'Email must be a string' })
-  @IsEmail({}, { message: 'Invalid email format' })
   @ApiProperty({ example: 'string@yopmail.com', description: 'string' })
   email: string;
 

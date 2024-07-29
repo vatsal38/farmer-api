@@ -53,7 +53,6 @@ export class UpdateFarmerDto {
   username?: string;
 
   @IsOptional()
-  @IsEmail({}, { message: 'Invalid email format' })
   @ApiProperty({
     example: 'string@yopmail.com',
     description: 'string',
