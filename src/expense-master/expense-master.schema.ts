@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import {
   IsNotEmpty,
   IsBoolean,
@@ -49,6 +49,9 @@ export class ExpenseMaster {
 
   @Prop({ default: uuidv4 })
   unique_id: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: string;
 
   @Prop()
   createdBy: string;

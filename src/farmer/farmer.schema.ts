@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import {
   IsNotEmpty,
   IsString,
@@ -65,6 +65,9 @@ export class Farmer {
   @IsEmail({}, { message: 'Invalid email format' })
   @ApiProperty({ example: 'string@yopmail.com', description: 'string' })
   email: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: string;
 
   @Prop()
   createdBy: string;

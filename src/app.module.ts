@@ -13,6 +13,7 @@ import { UploadController } from './upload-image/upload.controller';
 import { HttpModule } from '@nestjs/axios';
 import { FirebaseService } from './common/firebase.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TasksModule } from './task/tasks.module';
 const ENV: string = process.env.NODE_ENV;
 @Module({
   imports: [
@@ -68,6 +69,7 @@ const ENV: string = process.env.NODE_ENV;
     CustomerModule,
     ExpenseMasterModule,
     HttpModule,
+    TasksModule,
   ],
   controllers: [UploadController],
   providers: [FirebaseService],

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { IsNotEmpty, IsString, IsPhoneNumber, IsEmail } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -64,6 +64,9 @@ export class Customer {
   @IsNotEmpty({ message: 'Remarks is required' })
   @ApiProperty({ example: 'string', description: 'string' })
   remarks: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: string;
 
   @Prop()
   createdBy: string;

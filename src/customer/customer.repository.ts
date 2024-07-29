@@ -9,6 +9,7 @@ export class CustomerRepository {
 
   async create(customer: Customer, userId: string): Promise<Customer> {
     customer.createdBy = userId;
+    customer.user = userId;
     const newCustomer = new this.customerModel(customer);
     return newCustomer.save();
   }

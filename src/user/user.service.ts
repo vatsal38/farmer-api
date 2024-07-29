@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -143,7 +144,7 @@ export class UserService {
       user.resetOtp !== otp ||
       user.resetOtpExpiration < new Date()
     ) {
-      throw new Error('Invalid or expired OTP');
+      throw new BadRequestException('Invalid or expired OTP');
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

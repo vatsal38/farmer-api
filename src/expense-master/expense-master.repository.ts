@@ -13,6 +13,7 @@ export class ExpenseMasterRepository {
     userId: string,
   ): Promise<ExpenseMaster> {
     expenseMaster.createdBy = userId;
+    expenseMaster.user = userId;
     const newExpenseMaster = new this.expenseMasterModel(expenseMaster);
     return newExpenseMaster.save();
   }

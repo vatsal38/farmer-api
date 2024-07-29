@@ -9,6 +9,7 @@ export class FarmerRepository {
 
   async create(farmer: Farmer, userId: string): Promise<Farmer> {
     farmer.createdBy = userId;
+    farmer.user = userId;
     const newFarmer = new this.farmerModel(farmer);
     return newFarmer.save();
   }
