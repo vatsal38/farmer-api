@@ -7,6 +7,7 @@ import {
   IsBoolean,
   IsEmail,
   Length,
+  IsOptional,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -51,14 +52,14 @@ export class Farmer {
   @ApiProperty({ example: 'string', description: 'string' })
   username: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   @IsString({ message: 'Image URL must be a string' })
-  @IsNotEmpty({ message: 'Image URL is required' })
+  @IsOptional()
   @ApiProperty({
     example: 'https://example.com/image.png',
     description: 'Product image URL',
   })
-  image: string;
+  image?: string;
 
   @Prop({ required: true, unique: true })
   @IsString({ message: 'Email must be a string' })

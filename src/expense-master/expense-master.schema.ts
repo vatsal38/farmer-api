@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsString,
   IsPhoneNumber,
+  IsOptional,
 } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 import { ApiProperty } from '@nestjs/swagger';
@@ -13,14 +14,14 @@ export type ExpenseMasterDocument = ExpenseMaster & Document;
 
 @Schema()
 export class ExpenseMaster {
-  @Prop({ required: true })
+  @Prop({ required: false })
   @IsString({ message: 'Image URL must be a string' })
-  @IsNotEmpty({ message: 'Image URL is required' })
+  @IsOptional()
   @ApiProperty({
     example: 'https://example.com/image.png',
     description: 'Product image URL',
   })
-  image: string;
+  image?: string;
 
   @Prop({ unique: true })
   code: string;

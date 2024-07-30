@@ -1,20 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { IsNotEmpty, IsString, IsIn, IsBoolean } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsIn,
+  IsBoolean,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export type ProductDocument = Product & Document;
 
 @Schema()
 export class Product {
-  @Prop({ required: true })
+  @Prop({ required: false })
+  @IsOptional()
   @IsString({ message: 'Image must be a string' })
-  @IsNotEmpty({ message: 'Image is required' })
   @ApiProperty({
     example: 'https://example.com/image.png',
     description: 'Product image URL',
   })
-  image: string;
+  image?: string;
 
   @Prop({ unique: true })
   code: string;

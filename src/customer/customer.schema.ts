@@ -1,6 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { IsNotEmpty, IsString, IsPhoneNumber, IsEmail } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsPhoneNumber,
+  IsEmail,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export type CustomerDocument = Customer & Document;
@@ -10,14 +16,14 @@ export class Customer {
   @Prop({ unique: true })
   code: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   @IsString({ message: 'Image URL must be a string' })
-  @IsNotEmpty({ message: 'Image URL is required' })
+  @IsOptional()
   @ApiProperty({
     example: 'https://example.com/image.png',
     description: 'Product image URL',
   })
-  image: string;
+  image?: string;
 
   @Prop({ required: true })
   @IsString({ message: 'Name must be a string' })

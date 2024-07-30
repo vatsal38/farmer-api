@@ -9,9 +9,4 @@ export class TasksService {
   handleCron() {
     this.logger.debug('Called every 10 seconds');
   }
-
-  @Cron('45 * * * * *')
-  handleCronAt45thSecond() {
-    this.logger.debug('Called at the 45th second of every minute');
-  }
 }
