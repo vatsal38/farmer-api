@@ -201,4 +201,16 @@ export class ProductService {
       }
     }
   }
+
+  async updateStatus(updateStatusDto: any, userId: string): Promise<Product> {
+    const updatedProduct = await this.productRepository.updateStatus(
+      updateStatusDto.id,
+      updateStatusDto.status,
+      userId,
+    );
+    if (!updatedProduct) {
+      throw new NotFoundException('Farmer not found');
+    }
+    return updatedProduct;
+  }
 }

@@ -88,4 +88,25 @@ export class FarmerController {
     await this.farmerService.remove(id);
     return { message: 'Farmer deleted successfully!' };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('status')
+  @ApiOperation({ summary: 'Update farmer status' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string' },
+        status: { type: 'boolean' },
+      },
+    },
+  })
+  async updateStatus(
+    @Req() req: any,
+    @Body() updateStatusDto: { id: string; status: boolean },
+  ) {
+    const userId = req.user.userId;
+    await this.farmerService.updateStatus(updateStatusDto, userId);
+    return { message: 'Farmer status updated successfully!' };
+  }
 }

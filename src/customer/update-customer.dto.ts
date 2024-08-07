@@ -36,7 +36,7 @@ export class UpdateCustomerDto {
   gender?: string;
 
   @IsOptional()
-  @IsBoolean({ message: 'Status should be boolean' })
+  // @IsBoolean({ message: 'Status should be boolean' })
   @ApiProperty({ example: true, description: 'string', required: false })
   status?: boolean;
 

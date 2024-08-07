@@ -162,4 +162,20 @@ export class ExpenseMasterService {
       }
     }
   }
+
+  async updateStatus(
+    updateStatusDto: any,
+    userId: string,
+  ): Promise<ExpenseMaster> {
+    const updatedExpenseMaster =
+      await this.expenseMasterRepository.updateStatus(
+        updateStatusDto.id,
+        updateStatusDto.status,
+        userId,
+      );
+    if (!updatedExpenseMaster) {
+      throw new NotFoundException('ExpanseMaster not found');
+    }
+    return updatedExpenseMaster;
+  }
 }

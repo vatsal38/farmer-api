@@ -34,8 +34,8 @@ export class UpdateFarmerDto {
   gender?: string;
 
   @IsOptional()
-  @IsBoolean({ message: 'Status should be boolean' })
-  @ApiProperty({ example: true, description: 'string', required: false })
+  @ApiProperty({ example: true, description: 'true', required: false })
+  // @IsBoolean({ message: 'Status should be boolean' })
   status?: boolean;
 
   @IsOptional()

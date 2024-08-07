@@ -81,6 +81,20 @@ export class FarmerRepository {
       .exec();
   }
 
+  async updateStatus(
+    id: string,
+    status: boolean,
+    userId: string,
+  ): Promise<Farmer> {
+    return this.farmerModel
+      .findByIdAndUpdate(
+        id,
+        { status, updatedBy: userId, updatedAt: new Date() },
+        { new: true },
+      )
+      .exec();
+  }
+
   private createSearchQuery(search: string): any {
     if (!search) {
       return {};

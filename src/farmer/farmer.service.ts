@@ -155,4 +155,16 @@ export class FarmerService {
       }
     }
   }
+
+  async updateStatus(updateStatusDto: any, userId: string): Promise<Farmer> {
+    const updatedFarmer = await this.farmerRepository.updateStatus(
+      updateStatusDto.id,
+      updateStatusDto.status,
+      userId,
+    );
+    if (!updatedFarmer) {
+      throw new NotFoundException('Farmer not found');
+    }
+    return updatedFarmer;
+  }
 }

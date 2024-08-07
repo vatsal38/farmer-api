@@ -22,13 +22,13 @@ export class GlobalMaster {
   @IsString({ message: 'first name must be a string' })
   @IsNotEmpty({ message: 'first name is required' })
   @ApiProperty({ example: 'string', description: 'string' })
-  firstName: string;
+  fname: string;
 
   @Prop({ required: true })
   @IsString({ message: 'last name must be a string' })
   @IsNotEmpty({ message: 'last name is required' })
   @ApiProperty({ example: 'string', description: 'string' })
-  lastName: string;
+  lname: string;
 
   @Prop({ required: true })
   @IsString({ message: 'home must be a string' })
@@ -109,6 +109,7 @@ export class GlobalMaster {
   email: string;
 
   @Prop({ default: false })
+  @ApiProperty({ example: true, description: 'boolean' })
   isPayment: boolean;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })

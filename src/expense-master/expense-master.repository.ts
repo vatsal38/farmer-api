@@ -90,6 +90,20 @@ export class ExpenseMasterRepository {
       .exec();
   }
 
+  async updateStatus(
+    id: string,
+    status: boolean,
+    userId: string,
+  ): Promise<ExpenseMaster> {
+    return this.expenseMasterModel
+      .findByIdAndUpdate(
+        id,
+        { status, updatedBy: userId, updatedAt: new Date() },
+        { new: true },
+      )
+      .exec();
+  }
+
   private createSearchQuery(search: string): any {
     if (!search) {
       return {};

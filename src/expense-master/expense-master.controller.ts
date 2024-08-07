@@ -88,4 +88,25 @@ export class ExpenseMasterController {
     await this.expenseMasterService.remove(id);
     return { message: 'Expense Master deleted successfully!' };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('status')
+  @ApiOperation({ summary: 'Expense Master status' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string' },
+        status: { type: 'boolean' },
+      },
+    },
+  })
+  async updateStatus(
+    @Req() req: any,
+    @Body() updateStatusDto: { id: string; status: boolean },
+  ) {
+    const userId = req.user.userId;
+    await this.expenseMasterService.updateStatus(updateStatusDto, userId);
+    return { message: 'Expense Master updated successfully!' };
+  }
 }

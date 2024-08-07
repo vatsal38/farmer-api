@@ -88,4 +88,25 @@ export class CustomerController {
     await this.customerService.remove(id);
     return { message: 'Customer deleted successfully!' };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('status')
+  @ApiOperation({ summary: 'Update Customer status' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string' },
+        status: { type: 'boolean' },
+      },
+    },
+  })
+  async updateStatus(
+    @Req() req: any,
+    @Body() updateStatusDto: { id: string; status: boolean },
+  ) {
+    const userId = req.user.userId;
+    await this.customerService.updateStatus(updateStatusDto, userId);
+    return { message: 'Customer status updated successfully!' };
+  }
 }

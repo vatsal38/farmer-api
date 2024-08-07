@@ -148,4 +148,25 @@ export class ProductController {
       message: 'Product deleted Successfully',
     };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('status')
+  @ApiOperation({ summary: 'Update Product status' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string' },
+        status: { type: 'boolean' },
+      },
+    },
+  })
+  async updateStatus(
+    @Req() req: any,
+    @Body() updateStatusDto: { id: string; status: boolean },
+  ) {
+    const userId = req.user.userId;
+    await this.productService.updateStatus(updateStatusDto, userId);
+    return { message: 'Product status updated successfully!' };
+  }
 }

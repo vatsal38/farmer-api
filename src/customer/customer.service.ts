@@ -167,4 +167,16 @@ export class CustomerService {
       }
     }
   }
+
+  async updateStatus(updateStatusDto: any, userId: string): Promise<Customer> {
+    const updatedCustomer = await this.customerRepository.updateStatus(
+      updateStatusDto.id,
+      updateStatusDto.status,
+      userId,
+    );
+    if (!updatedCustomer) {
+      throw new NotFoundException('Customer not found');
+    }
+    return updatedCustomer;
+  }
 }

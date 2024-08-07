@@ -87,6 +87,20 @@ export class ProductRepository {
       .exec();
   }
 
+  async updateStatus(
+    id: string,
+    status: boolean,
+    userId: string,
+  ): Promise<Product> {
+    return this.productModel
+      .findByIdAndUpdate(
+        id,
+        { status, updatedBy: userId, updatedAt: new Date() },
+        { new: true },
+      )
+      .exec();
+  }
+
   private createSearchQuery(search: string): any {
     if (!search) {
       return {};

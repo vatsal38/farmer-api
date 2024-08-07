@@ -13,12 +13,12 @@ export class GlobalMasterDto {
   @IsOptional()
   @IsString({ message: 'first name must be a string' })
   @ApiProperty({ example: 'string', description: 'string' })
-  firstName?: string;
+  fname?: string;
 
   @IsOptional()
   @IsString({ message: 'last name must be a string' })
   @ApiProperty({ example: 'string', description: 'string' })
-  lastName?: string;
+  lname?: string;
 
   @IsOptional()
   @IsString({ message: 'home must be a string' })

@@ -39,7 +39,7 @@ export class UpdateProductDto {
   type?: string;
 
   @IsOptional()
-  @IsBoolean({ message: 'Status should be a true or false' })
+  // @IsBoolean({ message: 'Status should be a true or false' })
   @ApiProperty({
     example: true,
     description: 'Product status',

@@ -82,6 +82,20 @@ export class CustomerRepository {
       .exec();
   }
 
+  async updateStatus(
+    id: string,
+    status: boolean,
+    userId: string,
+  ): Promise<Customer> {
+    return this.customerModel
+      .findByIdAndUpdate(
+        id,
+        { status, updatedBy: userId, updatedAt: new Date() },
+        { new: true },
+      )
+      .exec();
+  }
+
   private createSearchQuery(search: string): any {
     if (!search) {
       return {};
