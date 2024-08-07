@@ -46,11 +46,8 @@ export class Farmer {
   @Prop({ default: true })
   status: boolean;
 
-  @Prop({ required: true, unique: true })
-  @IsString({ message: 'Username must be a string' })
-  @IsNotEmpty({ message: 'Username is required' })
-  @ApiProperty({ example: 'string', description: 'string' })
-  username: string;
+  @Prop({ unique: true })
+  username?: string;
 
   @Prop({ required: false })
   @IsString({ message: 'Image URL must be a string' })

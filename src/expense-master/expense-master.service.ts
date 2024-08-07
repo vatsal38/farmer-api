@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ExpenseMasterRepository } from './expense-master.repository';
 import { ExpenseMaster } from './expense-master.schema';
-
+import { generateUniqueUsername } from '../utils/functions';
 @Injectable()
 export class ExpenseMasterService {
   constructor(
@@ -39,6 +39,7 @@ export class ExpenseMasterService {
         currentCode = parseInt(highestCode, 10) + 1;
       }
       expenseMaster.code = `${codePrefix}${currentCode.toString().padStart(3, '0')}`;
+      expenseMaster.username = generateUniqueUsername();
       return await this.expenseMasterRepository.create(expenseMaster, userId);
     } catch (error) {
       if (error.keyPattern && error.keyPattern.phone) {

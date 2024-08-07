@@ -32,11 +32,12 @@ export class UpdateCustomerDto {
 
   @IsOptional()
   @IsString({ message: 'Gender must be a string' })
-  @ApiProperty({ example: true, description: 'string', required: false })
+  @ApiProperty({ example: 'male', description: 'string', required: false })
   gender?: string;
 
   @IsOptional()
   @IsBoolean({ message: 'Status should be boolean' })
+  @ApiProperty({ example: true, description: 'string', required: false })
   status?: boolean;
 
   @IsOptional()
@@ -52,11 +53,6 @@ export class UpdateCustomerDto {
   @IsString({ message: 'Remarks must be a string' })
   @ApiProperty({ example: 'string', description: 'string', required: false })
   remarks: string;
-
-  @IsOptional()
-  @IsString({ message: 'Username must be a string' })
-  @ApiProperty({ example: 'string', description: 'string', required: false })
-  username?: string;
 
   @IsOptional()
   @ApiProperty({

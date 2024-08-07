@@ -48,11 +48,6 @@ export class UpdateFarmerDto {
   image?: string;
 
   @IsOptional()
-  @IsString({ message: 'Username must be a string' })
-  @ApiProperty({ example: 'string', description: 'string', required: false })
-  username?: string;
-
-  @IsOptional()
   @ApiProperty({
     example: 'string@yopmail.com',
     description: 'string',

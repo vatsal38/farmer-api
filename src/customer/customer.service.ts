@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CustomerRepository } from './customer.repository';
 import { Customer } from './customer.schema';
-
+import { generateUniqueUsername } from '../utils/functions';
 @Injectable()
 export class CustomerService {
   constructor(private readonly customerRepository: CustomerRepository) {}
@@ -33,6 +33,7 @@ export class CustomerService {
         currentCode = parseInt(highestCode, 10) + 1;
       }
       customer.code = `${codePrefix}${currentCode.toString().padStart(3, '0')}`;
+      customer.username = generateUniqueUsername();
       return await this.customerRepository.create(customer, userId);
     } catch (error) {
       if (error.keyPattern && error.keyPattern.phone) {

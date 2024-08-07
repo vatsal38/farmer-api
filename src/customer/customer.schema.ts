@@ -50,11 +50,8 @@ export class Customer {
   @ApiProperty({ example: 'string', description: 'string' })
   village: string;
 
-  @Prop({ required: true, unique: true })
-  @IsString({ message: 'Username must be a string' })
-  @IsNotEmpty({ message: 'Username is required' })
-  @ApiProperty({ example: 'string', description: 'string' })
-  username: string;
+  @Prop({ unique: true })
+  username?: string;
 
   @Prop({ required: true })
   @IsString({ message: 'Gender must be a string' })

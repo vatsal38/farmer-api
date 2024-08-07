@@ -48,6 +48,9 @@ export class ExpenseMaster {
   @ApiProperty({ example: 'string', description: 'string' })
   remarks: string;
 
+  @Prop({ unique: true })
+  username?: string;
+
   @Prop({ default: uuidv4 })
   unique_id: string;
 

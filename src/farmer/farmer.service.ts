@@ -6,25 +6,13 @@ import {
 } from '@nestjs/common';
 import { FarmerRepository } from './farmer.repository';
 import { Farmer } from './farmer.schema';
-
+import { generateUniqueUsername } from '../utils/functions';
 @Injectable()
 export class FarmerService {
   constructor(private readonly farmerRepository: FarmerRepository) {}
 
   async create(farmer: Farmer, userId: string): Promise<Farmer> {
     try {
-      // const existingFarmerByPhone = await this.farmerRepository.findByPhone(
-      //   farmer.phone,
-      //   userId,
-      // );
-      // const existingFarmerByEmail = await this.farmerRepository.findByEmail(
-      //   farmer.email,
-      //   userId,
-      // );
-      // if (existingFarmerByPhone || existingFarmerByEmail) {
-      //   throw new ConflictException('Farmer is already exists');
-      // }
-
       const codePrefix = 'FAR';
       const highestCodeFarmer =
         await this.farmerRepository.highestCodeFarmer(codePrefix);
@@ -34,6 +22,7 @@ export class FarmerService {
         currentCode = parseInt(highestCode, 10) + 1;
       }
       farmer.code = `${codePrefix}${currentCode.toString().padStart(3, '0')}`;
+      farmer.username = generateUniqueUsername();
       return await this.farmerRepository.create(farmer, userId);
     } catch (error) {
       if (error.keyPattern && error.keyPattern.phone) {
