@@ -1,14 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import {
-  IsNotEmpty,
-  IsString,
-  IsPhoneNumber,
-  IsBoolean,
-  IsEmail,
-  Length,
-  IsOptional,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsPhoneNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export type GlobalMasterDocument = GlobalMaster & Document;
@@ -108,8 +100,9 @@ export class GlobalMaster {
   @ApiProperty({ example: 'string@yopmail.com', description: 'string' })
   email: string;
 
-  @Prop({ default: false })
-  @ApiProperty({ example: true, description: 'boolean' })
+  @Prop({ required: true })
+  @IsNotEmpty({ message: 'isPayment is required' })
+  @ApiProperty({ example: 'true', description: 'boolean' })
   isPayment: boolean;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })

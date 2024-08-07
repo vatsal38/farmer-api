@@ -89,5 +89,6 @@ export class GlobalMasterDto {
   email?: string;
 
   @IsOptional()
+  @ApiProperty({ example: 'true', description: 'boolean' })
   isPayment?: boolean;
 }
