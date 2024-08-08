@@ -3,9 +3,7 @@ import { FirebaseService } from './core/firebase/firebase.service';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly firebaseService: FirebaseService) {
-    this.firebaseService.initFirebase();
-  }
+  constructor() {}
   getHello(): string {
     return 'Hello World!';
   }

@@ -1,3 +1,4 @@
+import { AppService } from './app.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
@@ -15,6 +16,7 @@ import { FirebaseService } from './common/firebase.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TasksModule } from './task/tasks.module';
 import { GlobalMasterModule } from './global-master/global-master.module';
+import { AppController } from './app.controller';
 const ENV: string = process.env.NODE_ENV;
 @Module({
   imports: [
@@ -73,7 +75,7 @@ const ENV: string = process.env.NODE_ENV;
     TasksModule,
     GlobalMasterModule,
   ],
-  controllers: [UploadController],
-  providers: [FirebaseService],
+  controllers: [UploadController, AppController],
+  providers: [FirebaseService, AppService],
 })
 export class AppModule {}
