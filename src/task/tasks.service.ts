@@ -20,7 +20,7 @@ export class TasksService {
 
     try {
       const response: AxiosResponse<string> = await this.httpService
-        .get('http://localhost:5000/hello-world')
+        .get('https://farmer-api-9a00.onrender.com/hello-world')
         .toPromise();
 
       console.log('API Response:', response.data);
