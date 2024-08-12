@@ -46,4 +46,13 @@ export class UpdateProductDto {
     required: false,
   })
   status?: boolean;
+
+  @IsOptional()
+  @IsString({ message: 'category should be a string' })
+  @ApiProperty({
+    example: 'category',
+    description: 'category',
+    required: false,
+  })
+  category?: string;
 }

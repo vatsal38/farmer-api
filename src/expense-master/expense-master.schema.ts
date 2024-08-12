@@ -45,6 +45,7 @@ export class ExpenseMaster {
 
   @Prop()
   @IsString({ message: 'Remarks must be a string' })
+  @IsOptional()
   @ApiProperty({ example: 'string', description: 'string' })
   remarks: string;
 

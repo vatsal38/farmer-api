@@ -8,11 +8,6 @@ export class TasksService {
   constructor(private httpService: HttpService) {}
   private readonly logger = new Logger(TasksService.name);
 
-  // @Cron(CronExpression.EVERY_10_SECONDS)
-  // handleCron() {
-  //   this.logger.debug('Called every 10 seconds');
-  // }
-
   @Cron('*/12 * * * * *')
   async handleCron() {
     this.logger.debug('Called every 12 seconds');

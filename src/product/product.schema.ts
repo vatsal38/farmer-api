@@ -40,6 +40,12 @@ export class Product {
   @ApiProperty({ example: 'active', description: 'Product type' })
   type: string;
 
+  @Prop({ required: true })
+  @IsString({ message: 'category must be a string' })
+  @IsNotEmpty({ message: 'category is required' })
+  @ApiProperty({ example: 'category', description: 'category' })
+  category: string;
+
   @Prop({ default: true })
   status: boolean;
 

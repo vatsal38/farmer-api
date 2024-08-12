@@ -63,7 +63,7 @@ export class Customer {
 
   @Prop()
   @IsString({ message: 'Remarks must be a string' })
-  @IsNotEmpty({ message: 'Remarks is required' })
+  @IsOptional()
   @ApiProperty({ example: 'string', description: 'string' })
   remarks: string;
 
