@@ -51,6 +51,7 @@ export class ProductService {
                   image: product.image,
                   status: true,
                   user: null,
+                  category: 'user-charge',
                   createdBy: null,
                   createdAt: new Date(),
                   updatedBy: null,
