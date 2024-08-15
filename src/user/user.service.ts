@@ -225,8 +225,14 @@ export class UserService {
     createAccessManagerDto: AccessManagerDto,
     createdBy: string,
   ): Promise<any> {
-    const { firstName, number } = createAccessManagerDto;
-    const username = `${firstName}_${Math.floor(1000 + Math.random() * 9000)}`;
+    const { firstName, number, email } = createAccessManagerDto;
+
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const username = `${firstName}${Math.floor(1000 + Math.random() * 9000)}`;
     const password = Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -234,18 +240,24 @@ export class UserService {
       firstName,
       number,
       username,
+      email,
       password: hashedPassword,
       role: 'access-manager',
-      isVerified: true,
+      isVerified: false,
       isWeb: true,
       isAndroid: true,
       createdBy,
     });
 
-    return {
-      username,
-      password,
-    };
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Your Credential',
+      template: './credential',
+      context: {
+        username,
+        password,
+      },
+    });
   }
 
   async updateAccessManager(
@@ -255,7 +267,7 @@ export class UserService {
   ) {
     const accessManager = await this.userRepository.findOne(id);
     if (!accessManager) {
-      throw new NotFoundException(`AccessManager with ID ${id} not found`);
+      throw new NotFoundException(`AccessManager not found`);
     }
     await this.userRepository.updateAccessManager(
       id,
