@@ -30,5 +30,5 @@ export class AccessManagerDto {
   @IsBoolean()
   @IsOptional()
   @ApiProperty({ example: false })
-  isProduct: boolean;
+  isVerified?: boolean;
 }
