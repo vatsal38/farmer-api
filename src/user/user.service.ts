@@ -228,8 +228,8 @@ export class UserService {
     const { firstName, number, email } = createAccessManagerDto;
 
     const user = await this.userRepository.findByEmail(email);
-    if (!user) {
-      throw new NotFoundException('User not found');
+    if (user) {
+      throw new NotFoundException('User already existing');
     }
 
     const username = `${firstName}${Math.floor(1000 + Math.random() * 9000)}`;
