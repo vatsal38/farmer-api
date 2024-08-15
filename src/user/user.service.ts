@@ -9,6 +9,8 @@ import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
+import { AccessManagerDto } from './dto/access-manager.dto';
+import { User } from './user.schema';
 
 @Injectable()
 export class UserService {
@@ -217,5 +219,76 @@ export class UserService {
         otp,
       },
     });
+  }
+
+  async createAccessManager(
+    createAccessManagerDto: AccessManagerDto,
+    createdBy: string,
+  ): Promise<any> {
+    const { firstName, number } = createAccessManagerDto;
+    const username = `${firstName}_${Math.floor(1000 + Math.random() * 9000)}`;
+    const password = Math.random().toString(36).slice(-8);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await this.userRepository.createAccessManager({
+      firstName,
+      number,
+      username,
+      password: hashedPassword,
+      role: 'access-manager',
+      isVerified: true,
+      isWeb: true,
+      isAndroid: true,
+      createdBy,
+    });
+
+    return {
+      username,
+      password,
+    };
+  }
+
+  async updateAccessManager(
+    id: string,
+    updateAccessManagerDto: Partial<User>,
+    userId: string,
+  ) {
+    const accessManager = await this.userRepository.findOne(id);
+    if (!accessManager) {
+      throw new NotFoundException(`AccessManager with ID ${id} not found`);
+    }
+    await this.userRepository.updateAccessManager(
+      id,
+      updateAccessManagerDto,
+      userId,
+    );
+    return accessManager;
+  }
+
+  async findAllAccessManagers(
+    userId: string,
+    isSuperAdmin?: boolean,
+    search?: string,
+  ) {
+    return this.userRepository.findAll(userId, isSuperAdmin, search);
+  }
+
+  async remove(id: string): Promise<User> {
+    try {
+      const deletedUser = await this.userRepository.remove(id);
+      if (!deletedUser) {
+        throw new NotFoundException('User not found');
+      }
+      return deletedUser;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(
+          'Failed to delete user',
+          error.message,
+        );
+      }
+    }
   }
 }

@@ -27,17 +27,17 @@ export class User {
   @ApiProperty({ example: 'string', description: 'string' })
   firstName: string;
 
-  @Prop({ required: true })
+  @Prop()
   @IsEmail()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ example: 'string', description: 'string' })
-  email: string;
+  email?: string;
 
-  @Prop({ required: true })
+  @Prop()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ example: 'string', description: 'string' })
-  lastName: string;
+  lastName?: string;
 
   @Prop({ required: true })
   @IsString()
@@ -80,6 +80,49 @@ export class User {
   @Transform(({ value }) => new Date(value))
   @IsOptional()
   resetOtpExpiration: Date;
+
+  @Prop({ default: true })
+  @IsString()
+  @IsOptional()
+  isWeb?: boolean;
+
+  @Prop({ default: true })
+  @IsString()
+  @IsOptional()
+  isAndroid?: boolean;
+
+  @Prop({ default: "6356368324" })
+  @IsString()
+  @IsOptional()
+  number?: string;
+
+  @Prop()
+  createdBy: string;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop()
+  updatedBy: string;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.pre('save', function (next) {
+  const User = this as UserDocument;
+  User.updatedAt = new Date();
+  next();
+});
+
+UserSchema.pre('updateOne', function (next) {
+  this.set({ updatedAt: new Date() });
+  next();
+});
+
+UserSchema.pre('findOneAndUpdate', function (next) {
+  this.set({ updatedAt: new Date() });
+  next();
+});
