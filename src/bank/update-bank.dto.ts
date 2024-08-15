@@ -11,11 +11,6 @@ import {
 
 export class UpdateBankDto {
   @IsOptional()
-  @IsString({ message: 'Code must be a string' })
-  @ApiProperty({ example: 'string', description: 'string', required: false })
-  code?: string;
-
-  @IsOptional()
   @IsString({ message: 'Name must be a string' })
   @ApiProperty({ example: 'string', description: 'string', required: false })
   name?: string;
@@ -44,6 +39,6 @@ export class UpdateBankDto {
 
   @IsOptional()
   @IsString({ message: 'Opening Balance must be a number' })
-  @ApiProperty({ example: '2500', description: '2500', required: false })
+  @ApiProperty({ example: 'string', description: 'string', required: false })
   openingBalance?: number;
 }

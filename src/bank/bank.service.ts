@@ -13,6 +13,15 @@ export class BankService {
 
   async create(bank: Bank, userId: string): Promise<Bank> {
     try {
+      const codePrefix = 'BNK';
+      const highestCodeBank =
+        await this.bankRepository.highestCodeBank(codePrefix);
+      let currentCode = 1;
+      if (highestCodeBank) {
+        const highestCode = highestCodeBank.code.replace(codePrefix, '');
+        currentCode = parseInt(highestCode, 10) + 1;
+      }
+      bank.code = `${codePrefix}${currentCode.toString().padStart(3, '0')}`;
       return await this.bankRepository.create(bank, userId);
     } catch (error) {
       if (

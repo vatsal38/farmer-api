@@ -16,9 +16,6 @@ export type BankDocument = Bank & Document;
 @Schema()
 export class Bank {
   @Prop()
-  @IsString({ message: 'Code must be a string' })
-  @IsNotEmpty({ message: 'code is required' })
-  @ApiProperty({ example: 'string', description: 'string' })
   code: string;
 
   @Prop({ required: true })
@@ -50,7 +47,7 @@ export class Bank {
   @Prop({ required: true })
   @IsString({ message: 'Opening Balance must be a number' })
   @IsNotEmpty({ message: 'Opening Balance is required' })
-  @ApiProperty({ example: '2500', description: '2500' })
+  @ApiProperty({ example: 'string', description: 'string' })
   openingBalance: number;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
