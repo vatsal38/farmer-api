@@ -75,14 +75,7 @@ export class BankRepository {
     if (!search) {
       return {};
     }
-    const fieldsToSearch = [
-      'code',
-      'name',
-      'address',
-      'phone',
-      'remarks',
-      'openingBalance',
-    ];
+    const fieldsToSearch = ['code', 'name', 'phone'];
     return {
       $or: fieldsToSearch.map((field) => ({
         [field]: { $regex: search, $options: 'i' },
