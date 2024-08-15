@@ -105,6 +105,12 @@ export class GlobalMaster {
   @ApiProperty({ example: 'true', description: 'boolean' })
   isPayment: boolean;
 
+  @Prop({ required: true })
+  @IsString({ message: 'postage must be a string' })
+  @IsNotEmpty({ message: 'postage is required' })
+  @ApiProperty({ example: 'string', description: 'string' })
+  postage: string;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: string;
 

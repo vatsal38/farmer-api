@@ -91,4 +91,9 @@ export class GlobalMasterDto {
   @IsOptional()
   @ApiProperty({ example: 'true', description: 'boolean' })
   isPayment?: boolean;
+
+  @IsString({ message: 'postage must be a string' })
+  @IsOptional()
+  @ApiProperty({ example: 'string', description: 'string' })
+  postage?: string;
 }
