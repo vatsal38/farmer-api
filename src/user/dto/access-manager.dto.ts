@@ -18,16 +18,13 @@ export class AccessManagerDto {
   email?: string;
 
   @IsOptional()
-  @IsBoolean()
   @ApiProperty({ example: false })
   isWeb?: boolean;
 
   @IsOptional()
-  @IsBoolean()
   @ApiProperty({ example: false })
   isAndroid?: boolean;
 
-  @IsBoolean()
   @IsOptional()
   @ApiProperty({ example: false })
   isVerified?: boolean;
