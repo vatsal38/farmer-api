@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsEmail } from 'class-validator';
+import { IsString, IsOptional, IsEmail, IsBoolean } from 'class-validator';
 
 export class AccessManagerDto {
   @IsString()
@@ -16,4 +16,16 @@ export class AccessManagerDto {
   @IsOptional()
   @ApiProperty({ example: 'john.doe@example.com' })
   email?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isWeb?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isAndroid?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isProduct: boolean;
 }

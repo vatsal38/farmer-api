@@ -82,16 +82,16 @@ export class User {
   resetOtpExpiration: Date;
 
   @Prop({ default: true })
-  @IsString()
+  @IsBoolean()
   @IsOptional()
   isWeb?: boolean;
 
   @Prop({ default: true })
-  @IsString()
+  @IsBoolean()
   @IsOptional()
   isAndroid?: boolean;
 
-  @Prop({ default: "6356368324" })
+  @Prop({ default: '6356368324' })
   @IsString()
   @IsOptional()
   number?: string;
