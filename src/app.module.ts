@@ -17,6 +17,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TasksModule } from './task/tasks.module';
 import { GlobalMasterModule } from './global-master/global-master.module';
 import { AppController } from './app.controller';
+import { BankModule } from './bank/bank.module';
 const ENV: string = process.env.NODE_ENV;
 @Module({
   imports: [
@@ -74,6 +75,7 @@ const ENV: string = process.env.NODE_ENV;
     HttpModule,
     TasksModule,
     GlobalMasterModule,
+    BankModule,
   ],
   controllers: [UploadController, AppController],
   providers: [FirebaseService, AppService],
