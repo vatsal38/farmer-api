@@ -21,11 +21,9 @@ export class FirebaseService {
       appId: this.configService.get<string>('FIREBASE_APP_ID'),
       measurementId: this.configService.get<string>('FIREBASE_MEASUREMENT_ID'),
     };
-
     if (!getApps().length) {
       initializeApp(firebaseConfig);
     }
-
     this.storage = getStorage();
   }
 
