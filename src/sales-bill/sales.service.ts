@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { SalesRepository } from './sales.repository';
 import { BillSchema, Sales } from './sales.schema';
+import { UpdateBillDto } from './update-sales.dto';
 @Injectable()
 export class SalesService {
   constructor(
@@ -176,7 +177,17 @@ export class SalesService {
       if (!existSales) {
         throw new NotFoundException('Sales not found');
       }
-      return await this.salesRepository.update(id, sales);
+
+      const newBill: any = {
+        productId: sales.productId,
+        weight: sales.weight,
+        price: sales.price,
+        bags: sales.bags,
+        finalAmount: sales.finalAmount,
+        type: sales.type,
+      };
+
+      return this.salesRepository.update(id, newBill);
     } catch (error) {
       if (
         error instanceof ConflictException ||
@@ -207,5 +218,42 @@ export class SalesService {
         );
       }
     }
+  }
+
+  async updateBillById(
+    salesId: string,
+    billId: string,
+    updateBillingDto: UpdateBillDto,
+  ): Promise<Sales> {
+    const billing = await this.salesRepository.findBillingById(salesId, billId);
+
+    if (!billing) {
+      throw new NotFoundException(
+        `Billing record with ID ${salesId} not found`,
+      );
+    }
+
+    const updatedBill = {
+      productId: updateBillingDto.productId,
+      weight: updateBillingDto.weight,
+      price: updateBillingDto.price,
+      bags: updateBillingDto.bags,
+      finalAmount: updateBillingDto.finalAmount,
+      type: updateBillingDto.type,
+    };
+
+    return this.salesRepository.updateBillById(salesId, billId, updatedBill);
+  }
+
+  async deleteBillById(salesId: string, billId: string): Promise<Sales> {
+    const billing = await this.salesRepository.findBillingById(salesId, billId);
+
+    if (!billing) {
+      throw new NotFoundException(
+        `Billing record with ID ${salesId} not found`,
+      );
+    }
+
+    return this.salesRepository.deleteBillById(salesId, billId);
   }
 }

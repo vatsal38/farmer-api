@@ -28,15 +28,29 @@ export class SalesRepository {
     if (!isSuperAdmin) {
       query.createdBy = userId;
     }
-    return this.salesModel.find(query).exec();
+    return this.salesModel
+      .find(query)
+      .populate('farmerId')
+      .populate('billList.productId', 'productName')
+      .exec();
   }
 
   async findOne(id: string): Promise<Sales> {
-    return this.salesModel.findById(id).exec();
+    return this.salesModel
+      .findById(id)
+      .populate('farmerId')
+      .populate('billList.productId', 'productName')
+      .exec();
   }
 
   async update(id: string, sales: Partial<Sales>): Promise<Sales> {
-    return this.salesModel.findByIdAndUpdate(id, sales, { new: true }).exec();
+    return this.salesModel
+      .findByIdAndUpdate(
+        id,
+        { $push: { billList: sales } },
+        { new: true, useFindAndModify: false },
+      )
+      .exec();
   }
 
   async remove(id: string): Promise<Sales> {
@@ -51,6 +65,38 @@ export class SalesRepository {
     return this.salesModel.findOne({ email }, { createdBy: userId }).exec();
   }
 
+  async findBillingById(salesId: string, billId: string): Promise<any> {
+    const sales = await this.salesModel.findById(salesId).exec();
+    if (sales && sales.billList) {
+      return sales.billList.find((bill: any) => bill._id.toString() === billId);
+    }
+    return null;
+  }
+
+  async updateBillById(
+    salesId: string,
+    billId: string,
+    updateData: any,
+  ): Promise<Sales> {
+    return this.salesModel
+      .findOneAndUpdate(
+        { _id: salesId, 'billList._id': billId },
+        { $set: { 'billList.$': { ...updateData, _id: billId } } },
+        { new: true, useFindAndModify: false },
+      )
+      .exec();
+  }
+
+  async deleteBillById(salesId: string, billId: string): Promise<Sales> {
+    return this.salesModel
+      .findOneAndUpdate(
+        { _id: salesId },
+        { $pull: { billList: { _id: billId } } },
+        { new: true, useFindAndModify: false },
+      )
+      .exec();
+  }
+
   async findWithPagination(
     skip: number,
     limit: number,
@@ -62,7 +108,13 @@ export class SalesRepository {
     if (!isSuperAdmin) {
       query.createdBy = userId;
     }
-    return this.salesModel.find(query).skip(skip).limit(limit).exec();
+    return this.salesModel
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .populate('farmerId')
+      .populate('billList.productId', 'productName')
+      .exec();
   }
 
   async countAll(

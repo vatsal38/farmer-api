@@ -13,7 +13,7 @@ import {
 import { SalesService } from './sales.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Sales } from './sales.schema';
-import { UpdateSalesDto } from './update-sales.dto';
+import { UpdateBillDto } from './update-sales.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -73,14 +73,14 @@ export class SalesController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a sales' })
-  @ApiBody({ type: UpdateSalesDto })
+  @ApiBody({ type: UpdateBillDto })
   async update(
     @Req() req: any,
     @Param('id') id: string,
-    @Body() updateSalesDto: UpdateSalesDto,
+    @Body() updateBillingDto: UpdateBillDto,
   ) {
     const userId = req.user.userId;
-    await this.salesService.update(id, updateSalesDto, userId);
+    await this.salesService.update(id, updateBillingDto, userId);
     return { message: 'Sales updated successfully!' };
   }
 
@@ -90,5 +90,24 @@ export class SalesController {
   async remove(@Param('id') id: string) {
     await this.salesService.remove(id);
     return { message: 'Sales deleted successfully!' };
+  }
+
+  @Patch(':salesId/bills/:billId')
+  async updateBill(
+    @Param('salesId') salesId: string,
+    @Param('billId') billId: string,
+    @Body() updateBillingDto: UpdateBillDto,
+  ) {
+    await this.salesService.updateBillById(salesId, billId, updateBillingDto);
+    return { message: 'Billing updated successfully!' };
+  }
+
+  @Delete(':salesId/bills/:billId')
+  async deleteBill(
+    @Param('salesId') salesId: string,
+    @Param('billId') billId: string,
+  ) {
+    await this.salesService.deleteBillById(salesId, billId);
+    return { message: 'Billing deleted successfully!' };
   }
 }

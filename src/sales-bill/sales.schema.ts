@@ -19,7 +19,7 @@ export type SalesDocument = Sales & Document;
 
 @Schema()
 export class BillSchema {
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product' })
   @ApiProperty({ description: 'The ID of the product', example: 'product123' })
   @IsOptional()
   @IsMongoId()
@@ -46,7 +46,7 @@ export class BillSchema {
   @ApiProperty({ description: 'Number of bags', example: 2 })
   bags: number;
 
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   @IsOptional()
   @IsMongoId()
   user: string;
@@ -64,27 +64,12 @@ export class BillSchema {
 
 @Schema()
 export class Sales {
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Farmer' })
   @IsOptional()
   @IsMongoId()
   @ApiProperty({ description: 'The ID of the farmer', example: 'farmer123' })
   farmerId: string;
 
-  @ApiProperty({
-    description: 'List of bills for the sales',
-    type: [BillSchema],
-    example: [
-      {
-        productId: 'product123',
-        weight: 100,
-        price: 50,
-        bags: 2,
-        platform: 'web',
-        finalAmount: 100,
-        type: 'sale',
-      },
-    ],
-  })
   @Prop({ type: [BillSchema], required: true })
   @IsOptional()
   billList: BillSchema[];

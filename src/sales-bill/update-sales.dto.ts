@@ -1,14 +1,6 @@
 // update-sales.dto.ts
-import {
-  IsOptional,
-  IsMongoId,
-  IsArray,
-  ValidateNested,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsOptional, IsMongoId, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 
 export class UpdateBillDto {
   @ApiProperty({
@@ -60,36 +52,4 @@ export class UpdateBillDto {
   @IsOptional()
   @IsString()
   type?: string;
-}
-
-export class UpdateSalesDto {
-  @ApiProperty({
-    description: 'The ID of the farmer',
-    example: 'farmer123',
-    required: false,
-  })
-  @IsOptional()
-  @IsMongoId()
-  farmerId?: string;
-
-  @ApiProperty({
-    description: 'List of bills for the sales',
-    type: [UpdateBillDto],
-    example: [
-      {
-        productId: 'product123',
-        weight: 100,
-        price: 50,
-        bags: 2,
-        finalAmount: 100,
-        type: 'sale',
-      },
-    ],
-    required: false,
-  })
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpdateBillDto)
-  billList?: UpdateBillDto[];
 }
