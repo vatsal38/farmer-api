@@ -80,7 +80,6 @@ export class Sales {
         price: 50,
         bags: 2,
         platform: 'web',
-        createdBy: 'user',
         finalAmount: 100,
         type: 'sale',
       },

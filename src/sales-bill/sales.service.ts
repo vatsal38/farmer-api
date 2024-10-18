@@ -41,9 +41,13 @@ export class SalesService {
     const bBags = billList
       .filter((bill) => bill.bags < 0)
       .reduce((acc, bill) => acc + bill.bags, 0);
-    const marketFee = (totalPrice * Number(marketFeesPrice)) / 100;
-    const commission = (totalPrice * Number(baseCommission)) / 100;
-    const hamali = uBags * Number(hamaliPrice);
+    const marketFee = Number(
+      ((totalPrice * Number(marketFeesPrice)) / 100).toFixed(2),
+    );
+    const commission = Number(
+      ((totalPrice * Number(baseCommission)) / 100).toFixed(2),
+    );
+    const hamali = Number((uBags * Number(hamaliPrice)).toFixed(2));
 
     return { uBags, bBags, totalWeight, marketFee, commission, hamali };
   }

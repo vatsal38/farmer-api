@@ -8,6 +8,7 @@ import {
   IsEmail,
   Length,
   IsOptional,
+  IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -45,9 +46,9 @@ export class Bank {
   remarks: string;
 
   @Prop({ required: true })
-  @IsString({ message: 'Opening Balance must be a number' })
+  @IsNumber()
   @IsNotEmpty({ message: 'Opening Balance is required' })
-  @ApiProperty({ example: 'string', description: 'string' })
+  @ApiProperty({ example: 0, description: 'string' })
   openingBalance: number;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
