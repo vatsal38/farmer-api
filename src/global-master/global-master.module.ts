@@ -13,5 +13,6 @@ import { GlobalMasterRepository } from './global-master.repository';
   ],
   controllers: [GlobalMasterController],
   providers: [GlobalMasterService, GlobalMasterRepository],
+  exports: [GlobalMasterService, GlobalMasterRepository, MongooseModule],
 })
 export class GlobalMasterModule {}

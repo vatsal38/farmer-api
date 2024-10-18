@@ -52,7 +52,15 @@ export class SalesController {
   ) {
     const isSuperAdmin = req.user.role === 'superadmin';
     const userId = req.user.userId;
-    return this.salesService.findAll(userId, page, limit, search, isSuperAdmin);
+    const isWebLogin = req.user.loginType === 'web';
+    return this.salesService.findAll(
+      userId,
+      isWebLogin,
+      page,
+      limit,
+      search,
+      isSuperAdmin,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

@@ -1,3 +1,4 @@
+import { GlobalMasterService } from './../global-master/global-master.service';
 import {
   Injectable,
   NotFoundException,
@@ -5,11 +6,47 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { SalesRepository } from './sales.repository';
-import { Sales } from './sales.schema';
-import { generateUniqueUsername } from '../utils/functions';
+import { BillSchema, Sales } from './sales.schema';
 @Injectable()
 export class SalesService {
-  constructor(private readonly salesRepository: SalesRepository) {}
+  constructor(
+    private readonly salesRepository: SalesRepository,
+    private readonly globalMasterService: GlobalMasterService,
+  ) {}
+
+  private calculateAdditionalFields(
+    billList: BillSchema[],
+    basePrice: any,
+    webCommission: any,
+    appCommission: any,
+    baseCommission: any,
+    hamaliPrice: any,
+    marketFeesPrice: any,
+    isWebLogin: any,
+  ) {
+    let uBags = 0;
+    let totalWeight = 0;
+    let totalPrice = 0;
+
+    billList.forEach((bill) => {
+      if (bill.bags > 0) uBags += bill.bags;
+      totalWeight += bill.weight;
+      const total = (bill.weight * bill.price) / Number(basePrice);
+      const commission =
+        (total * isWebLogin ? Number(webCommission) : Number(appCommission)) /
+        100;
+      const tPrice = total + commission;
+      totalPrice += tPrice;
+    });
+    const bBags = billList
+      .filter((bill) => bill.bags < 0)
+      .reduce((acc, bill) => acc + bill.bags, 0);
+    const marketFee = (totalPrice * Number(marketFeesPrice)) / 100;
+    const commission = (totalPrice * Number(baseCommission)) / 100;
+    const hamali = uBags * Number(hamaliPrice);
+
+    return { uBags, bBags, totalWeight, marketFee, commission, hamali };
+  }
 
   async create(sales: Sales, userId: string): Promise<Sales> {
     try {
@@ -29,11 +66,21 @@ export class SalesService {
 
   async findAll(
     userId: string,
+    isWebLogin: boolean,
     page?: number,
     limit?: number,
     search?: string,
     isSuperAdmin?: boolean,
   ) {
+    const {
+      basePrice,
+      webCommission,
+      appCommission,
+      commission: baseCommission,
+      hamali: hamaliPrice,
+      marketFees: marketFeesPrice,
+    } = await this.globalMasterService.findOne(userId);
+
     if (page && limit) {
       const skip = (page - 1) * limit;
       const [items, totalRecords] = await Promise.all([
@@ -46,9 +93,32 @@ export class SalesService {
         ),
         this.salesRepository.countAll(userId, search, isSuperAdmin),
       ]);
+      const salesWithAdditionalFields = items.map((sales: any) => {
+        const { uBags, bBags, totalWeight, marketFee, commission, hamali } =
+          this.calculateAdditionalFields(
+            sales.billList,
+            basePrice,
+            webCommission,
+            appCommission,
+            baseCommission,
+            hamaliPrice,
+            marketFeesPrice,
+            isWebLogin,
+          );
+        return {
+          ...sales.toObject(),
+          uBags,
+          bBags,
+          totalWeight,
+          marketFee,
+          commission,
+          hamali,
+        };
+      });
+
       const totalPages = Math.ceil(totalRecords / limit);
       return {
-        items,
+        items: salesWithAdditionalFields,
         recordsPerPage: limit,
         totalRecords,
         currentPageNumber: page,
@@ -60,7 +130,31 @@ export class SalesService {
         search,
         isSuperAdmin,
       );
-      return items;
+
+      const salesWithAdditionalFields = items.map((sales: any) => {
+        const { uBags, bBags, totalWeight, marketFee, commission, hamali } =
+          this.calculateAdditionalFields(
+            sales.billList,
+            basePrice,
+            webCommission,
+            appCommission,
+            baseCommission,
+            hamaliPrice,
+            marketFeesPrice,
+            isWebLogin,
+          );
+        return {
+          ...sales.toObject(),
+          uBags,
+          bBags,
+          totalWeight,
+          marketFee,
+          commission,
+          hamali,
+        };
+      });
+
+      return salesWithAdditionalFields;
     }
   }
 
@@ -109,17 +203,5 @@ export class SalesService {
         );
       }
     }
-  }
-
-  async updateStatus(updateStatusDto: any, userId: string): Promise<Sales> {
-    const updatedSales = await this.salesRepository.updateStatus(
-      updateStatusDto.id,
-      updateStatusDto.status,
-      userId,
-    );
-    if (!updatedSales) {
-      throw new NotFoundException('Sales not found');
-    }
-    return updatedSales;
   }
 }
