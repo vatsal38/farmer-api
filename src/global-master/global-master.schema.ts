@@ -1,6 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { IsNotEmpty, IsString, IsPhoneNumber } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsPhoneNumber,
+  IsNumber,
+  Min,
+  Max,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export type GlobalMasterDocument = GlobalMaster & Document;
@@ -53,22 +60,28 @@ export class GlobalMaster {
   marketFees: string;
 
   @Prop({ required: true })
-  @IsString({ message: 'commission must be a string' })
+  @IsNumber()
   @IsNotEmpty({ message: 'commission is required' })
-  @ApiProperty({ example: 'string', description: 'string' })
-  commission: string;
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  commission: number;
 
   @Prop({ required: true })
-  @IsString({ message: 'bhada must be a string' })
+  @IsNumber()
   @IsNotEmpty({ message: 'bhada is required' })
-  @ApiProperty({ example: 'string', description: 'string' })
-  bhada: string;
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  bhada: number;
 
   @Prop({ required: true })
-  @IsString({ message: 'stemp must be a string' })
+  @IsNumber()
   @IsNotEmpty({ message: 'stemp is required' })
-  @ApiProperty({ example: 'string', description: 'string' })
-  stemp: string;
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  stemp: number;
 
   @Prop({ required: true })
   @IsString({ message: 'hamali must be a string' })
@@ -110,6 +123,30 @@ export class GlobalMaster {
   @IsNotEmpty({ message: 'postage is required' })
   @ApiProperty({ example: 'string', description: 'string' })
   postage: string;
+
+  @Prop({ required: true })
+  @IsNumber()
+  @IsNotEmpty({ message: 'App Commission is required' })
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  appCommission: number;
+
+  @Prop({ required: true })
+  @IsNumber()
+  @IsNotEmpty({ message: 'Web Commission is required' })
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  webCommission: number;
+
+  @Prop({ required: true })
+  @IsNumber()
+  @IsNotEmpty({ message: 'Base Price is required' })
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  basePrice: number;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: string;

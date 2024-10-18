@@ -165,6 +165,7 @@ export class UserService {
       username: userData.username,
       sub: userData._id,
       role: userData.role,
+      loginType: user.loginType,
     };
 
     let isFirstLogin = false;
@@ -187,6 +188,7 @@ export class UserService {
             role: userData.role,
             isVerified: userData.isVerified,
             isProduct: isFirstLogin,
+            loginType: user.loginType,
           },
         },
       };

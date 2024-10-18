@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsNotEmpty,
   IsString,
-  IsIn,
   IsOptional,
   IsPhoneNumber,
-  IsEmail,
-  IsBoolean,
+  IsNumber,
+  Min,
+  Max,
 } from 'class-validator';
 
 export class GlobalMasterDto {
@@ -46,19 +45,25 @@ export class GlobalMasterDto {
   marketFees?: string;
 
   @IsOptional()
-  @IsString({ message: 'commission must be a string' })
-  @ApiProperty({ example: 'string', description: 'string' })
-  commission?: string;
+  @IsNumber()
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  commission?: number;
 
   @IsOptional()
-  @IsString({ message: 'bhada must be a string' })
-  @ApiProperty({ example: 'string', description: 'string' })
-  bhada?: string;
+  @IsNumber()
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  bhada?: number;
 
   @IsOptional()
-  @IsString({ message: 'stemp must be a string' })
-  @ApiProperty({ example: 'string', description: 'string' })
-  stemp?: string;
+  @IsNumber()
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  stemp?: number;
 
   @IsOptional()
   @IsString({ message: 'hamali must be a string' })
@@ -96,4 +101,25 @@ export class GlobalMasterDto {
   @IsOptional()
   @ApiProperty({ example: 'string', description: 'string' })
   postage?: string;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  appCommission?: number;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  webCommission?: number;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({ example: 0, description: 'string' })
+  @Min(0, { message: 'App Commission cannot be negative' })
+  @Max(100, { message: 'App Commission must be less than 100' })
+  basePrice?: number;
 }

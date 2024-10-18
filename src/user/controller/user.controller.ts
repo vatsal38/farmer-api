@@ -4,6 +4,7 @@ import { LocalAuthGuard } from '../../auth/local-auth.guard';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AccessManagerDto } from '../dto/access-manager.dto';
+import { LoginDto } from '../dto/login-user.dto';
 @ApiTags('Auth and User')
 @Controller('auth')
 export class UserController {
@@ -52,16 +53,8 @@ export class UserController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @ApiOperation({ summary: 'Log in user' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        username: { type: 'string' },
-        password: { type: 'string' },
-      },
-    },
-  })
-  async login(@Body() data: any) {
+  @ApiBody({ type: LoginDto })
+  async login(@Body() data: LoginDto) {
     return await this.userService.login(data);
   }
 
