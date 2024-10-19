@@ -154,50 +154,54 @@ export class UserService {
   }
 
   async login(user: any) {
-    const userData: any = await this.userRepository.findByUsername(
-      user.username,
-    );
+    try {
+      const userData: any = await this.userRepository.findByUsername(
+        user.username,
+      );
 
-    if (!userData) {
-      throw new NotFoundException('User not found');
-    }
-    const payload = {
-      username: userData.username,
-      sub: userData._id,
-      role: userData.role,
-      loginType: user.loginType,
-    };
-
-    let isFirstLogin = false;
-    if (userData.isVerified && userData.isProduct) {
-      isFirstLogin = true;
-      await this.userRepository.updateIsProduct(userData.username, false);
-    }
-
-    if (userData.isVerified) {
-      return {
-        message: 'Login successfully',
-        data: {
-          access_token: this.jwtService.sign(payload),
-          user: {
-            id: userData._id,
-            username: userData.username,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            role: userData.role,
-            isVerified: userData.isVerified,
-            isProduct: isFirstLogin,
-            loginType: user.loginType,
-          },
-        },
-      };
-    } else {
-      return {
-        message: 'You are not verified we sent you otp on mail, verify first',
-        isVerified: userData.isVerified,
+      if (!userData) {
+        throw new NotFoundException('User not found');
+      }
+      const payload = {
         username: userData.username,
+        sub: userData._id,
+        role: userData.role,
+        loginType: user.loginType,
       };
+
+      let isFirstLogin = false;
+      if (userData.isVerified && userData.isProduct) {
+        isFirstLogin = true;
+        await this.userRepository.updateIsProduct(userData.username, false);
+      }
+
+      if (userData.isVerified) {
+        return {
+          message: 'Login successfully',
+          data: {
+            access_token: this.jwtService.sign(payload),
+            user: {
+              id: userData._id,
+              username: userData.username,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              email: userData.email,
+              role: userData.role,
+              isVerified: userData.isVerified,
+              isProduct: isFirstLogin,
+              loginType: user.loginType,
+            },
+          },
+        };
+      } else {
+        return {
+          message: 'You are not verified we sent you otp on mail, verify first',
+          isVerified: userData.isVerified,
+          username: userData.username,
+        };
+      }
+    } catch (error) {
+      console.log('error::: ', error);
     }
   }
 
