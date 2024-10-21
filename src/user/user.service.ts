@@ -231,7 +231,8 @@ export class UserService {
     createAccessManagerDto: AccessManagerDto,
     createdBy: string,
   ): Promise<any> {
-    const { firstName, number, email } = createAccessManagerDto;
+    const { firstName, number, email, isVerified, isWeb, isAndroid } =
+      createAccessManagerDto;
 
     const user = await this.userRepository.findByEmail(email);
     if (user) {
@@ -248,9 +249,9 @@ export class UserService {
       email,
       password: hashedPassword,
       role: 'access-manager',
-      isVerified: false,
-      isWeb: true,
-      isAndroid: true,
+      isVerified,
+      isWeb,
+      isAndroid,
       createdBy,
     });
 
