@@ -239,15 +239,14 @@ export class UserService {
     }
 
     const username = `${firstName}${Math.floor(1000 + Math.random() * 9000)}`;
-    // const password = Math.random().toString(36).slice(-8);
-    // const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(number, 10);
 
     await this.userRepository.createAccessManager({
       firstName,
       number,
       username,
       email,
-      password: number,
+      password: hashedPassword,
       role: 'access-manager',
       isVerified: false,
       isWeb: true,
